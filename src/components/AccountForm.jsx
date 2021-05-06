@@ -6,18 +6,18 @@ export const buttonFocusStyle =
   'focus:outline-none focus:ring focus:ring-offset-0 focus:ring-blue-500 focus:ring-offset-transparent'
 
 export default function AccountForm({
-  config = {},
+  config,
   onClose,
   onSave,
   onDelete,
   innerRef
 }) {
-  const isNew = !config.apikey
+  const isNew = !config
   const [form, setForm] = useState(() => ({
-    label: config.label || '',
-    username: config.username || '',
-    apikey: config.apikey || '',
-    urlTemplate: config.urlTemplate || ''
+    label: (config && config.label) || '',
+    username: (config && config.username) || '',
+    apikey: (config && config.apikey) || '',
+    urlTemplate: (config && config.urlTemplate) || ''
   }))
 
   const update = (key) => (ev) =>
@@ -35,7 +35,7 @@ export default function AccountForm({
         label="Name (for reference only)"
         value={form.label}
         onChange={update('label')}
-        placeholder="New config"
+        placeholder="New account"
       />
       <Input
         id="username"

@@ -15,12 +15,10 @@ function reducer(state, action) {
   const { type, payload } = action
   switch (type) {
     case ACCOUNT_ACTIONS.CREATE:
-      return state.push({ ...payload, value: payload.payload })
+      return state.concat(payload)
     case ACCOUNT_ACTIONS.UPDATE:
       return state.map((opt) =>
-        opt.apikey === payload.apikey
-          ? { ...opt, ...payload, value: payload.payload }
-          : opt
+        opt.apikey === payload.apikey ? { ...opt, ...payload } : opt
       )
     case ACCOUNT_ACTIONS.DELETE:
       return state.filter((opt) => opt.apikey !== payload)
@@ -52,7 +50,7 @@ export function useAccounts() {
 export function useAccountsActions() {
   const dispatch = useContext(DispatchContext)
   const actions = {}
-  for (const actionKey in ACCOUNT_ACTIONS) {
+  for (const actionKey of Object.values(ACCOUNT_ACTIONS)) {
     actions[actionKey] = (payload) => dispatch({ type: actionKey, payload })
   }
 

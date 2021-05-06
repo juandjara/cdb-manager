@@ -1,5 +1,4 @@
-import { useAccountsActions } from '@/lib/AccountsContext'
-import { useAccounts } from '@/lib/AccountsContext'
+import { useAccounts, useAccountsActions } from '@/lib/AccountsContext'
 import { Transition } from '@headlessui/react'
 import React, { useState } from 'react'
 import Button from './Button'
@@ -11,13 +10,11 @@ export default function AccountSection() {
   const [formOpen, setFormOpen] = useState(false)
   const accounts = useAccounts()
   const configActions = useAccountsActions()
-  const [selectedAccount, setSelectedAccount] = useState(
-    () => accounts[0] || { label: 'New account' }
-  )
+  const [selectedAccount, setSelectedAccount] = useState(() => accounts[0])
 
   function openNew() {
-    setSelectedAccount({ label: 'New account' })
-    openSelected()
+    setSelectedAccount(null)
+    setFormOpen(true)
   }
 
   function openSelected() {
@@ -26,12 +23,16 @@ export default function AccountSection() {
 
   function handleDelete() {
     configActions[ACCOUNT_ACTIONS.DELETE](selectedAccount.apikey)
+    setFormOpen(false)
+    setSelectedAccount(null)
   }
 
   function handleSave(newConfig) {
-    const isNew = !selectedAccount.apikey
+    const isNew = !selectedAccount
     const action = isNew ? ACCOUNT_ACTIONS.CREATE : ACCOUNT_ACTIONS.UPDATE
     configActions[action](newConfig)
+    setFormOpen(false)
+    setSelectedAccount(newConfig)
   }
 
   return (
@@ -62,6 +63,7 @@ export default function AccountSection() {
       </div>
       <div className="mt-2 relative rounded-md shadow-sm">
         <Select
+          valueKey="apikey"
           selected={selectedAccount}
           onChange={setSelectedAccount}
           options={accounts}
