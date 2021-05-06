@@ -4,20 +4,34 @@
     "build": "snowpack build",
     "test": "web-test-runner \"src/**/*.test.jsx\"",
     "format": "prettier --write \"src/**/*.{js,jsx}\"",
-    "lint": "prettier --check \"src/**/*.{js,jsx}\""
+    "lint": "eslint --fix \"src/**/*.{js,jsx}\""
   },
   "dependencies": {
+    "@headlessui/react": "^1.1.1",
+    "@heroicons/react": "^1.0.1",
+    "@tailwindcss/forms": "^0.3.2",
     "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "react-dom": "^17.0.2",
+    "styled-components": "^5.3.0"
   },
   "devDependencies": {
     "@snowpack/plugin-dotenv": "^2.1.0",
+    "@snowpack/plugin-postcss": "^1.2.2",
     "@snowpack/plugin-react-refresh": "^2.5.0",
     "@snowpack/web-test-runner-plugin": "^0.2.2",
     "@testing-library/react": "^11.2.6",
     "@web/test-runner": "^0.13.3",
+    "autoprefixer": "^10.2.5",
     "chai": "^4.3.4",
+    "eslint": "^7.25.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^3.4.0",
+    "eslint-config-react-app": "^6.0.0",
+    "eslint-plugin-react": "^7.23.2",
+    "postcss": "^8.2.14",
+    "postcss-cli": "^8.3.1",
     "prettier": "^2.2.1",
-    "snowpack": "^3.3.7"
+    "snowpack": "^3.3.7",
+    "tailwindcss": "^2.1.2"
   }
 }
