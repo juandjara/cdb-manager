@@ -10,7 +10,11 @@ export default function AccountSection() {
   const [formOpen, setFormOpen] = useState(false)
   const accounts = useAccounts()
   const configActions = useAccountsActions()
-  const [selectedAccount, setSelectedAccount] = useState(() => accounts[0])
+  const selectedAccount = accounts.find((a) => a.selected)
+
+  function setSelectedAccount(account) {
+    configActions[ACCOUNT_ACTIONS.SELECT](account && account.apikey)
+  }
 
   function openNew() {
     setSelectedAccount(null)

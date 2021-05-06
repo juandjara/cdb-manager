@@ -8,7 +8,8 @@ const DispatchContext = createContext()
 export const ACCOUNT_ACTIONS = {
   CREATE: 'create',
   UPDATE: 'update',
-  DELETE: 'delete'
+  DELETE: 'delete',
+  SELECT: 'select'
 }
 
 function reducer(state, action) {
@@ -22,6 +23,11 @@ function reducer(state, action) {
       )
     case ACCOUNT_ACTIONS.DELETE:
       return state.filter((opt) => opt.apikey !== payload)
+    case ACCOUNT_ACTIONS.SELECT:
+      return state.map((opt) => {
+        const selected = opt.apikey === payload
+        return { ...opt, selected }
+      })
     default:
       return state
   }
