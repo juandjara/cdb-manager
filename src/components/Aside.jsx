@@ -1,5 +1,5 @@
 import React from 'react'
-import ConfigSection from './ConfigSection'
+import ConfigSection from './AccountSection'
 
 export default function Aside() {
   return (

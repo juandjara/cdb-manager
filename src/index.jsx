@@ -2,10 +2,13 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import App from './App.jsx'
 import './index.css'
+import { ConfigProvider } from './lib/AccountsContext.jsx'
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <ConfigProvider>
+      <App />
+    </ConfigProvider>
   </React.StrictMode>,
   document.getElementById('root')
 )

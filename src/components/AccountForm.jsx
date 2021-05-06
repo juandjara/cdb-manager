@@ -5,7 +5,7 @@ import Input from './Input'
 export const buttonFocusStyle =
   'focus:outline-none focus:ring focus:ring-offset-0 focus:ring-blue-500 focus:ring-offset-transparent'
 
-export default function ConfigForm({
+export default function AccountForm({
   config = {},
   onClose,
   onSave,
@@ -15,7 +15,7 @@ export default function ConfigForm({
   const isNew = !config.apikey
   const [form, setForm] = useState(() => ({
     label: config.label || '',
-    account: config.account || '',
+    username: config.username || '',
     apikey: config.apikey || '',
     urlTemplate: config.urlTemplate || ''
   }))
@@ -38,10 +38,10 @@ export default function ConfigForm({
         placeholder="New config"
       />
       <Input
-        id="account"
+        id="username"
         label="Account name"
-        value={form.account}
-        onChange={update('account')}
+        value={form.username}
+        onChange={update('username')}
         placeholder="public"
       />
       <Input

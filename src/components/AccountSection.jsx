@@ -1,25 +1,22 @@
+import { useAccountsActions } from '@/lib/AccountsContext'
+import { useAccounts } from '@/lib/AccountsContext'
 import { Transition } from '@headlessui/react'
 import React, { useState } from 'react'
 import Button from './Button'
-import ConfigForm from './ConfigForm'
+import AccountForm from './AccountForm'
 import Select from './Select'
+import { ACCOUNT_ACTIONS } from '@/lib/AccountsContext'
 
-const OPTS = [
-  { apikey: '123435565', account: 'vodafone-admin-dev', label: 'Vodafone' },
-  { apikey: '313565734', account: 'gap-demo', label: 'Site Planning' },
-  {
-    apikey: '890787894',
-    account: 'clear-channel-dev',
-    label: 'Clear Channel DEV'
-  }
-].map((opt) => ({ ...opt, value: opt.apikey }))
-
-export default function ConfigSection() {
-  const [config, setConfig] = useState(OPTS[0])
+export default function AccountSection() {
   const [formOpen, setFormOpen] = useState(false)
+  const accounts = useAccounts()
+  const configActions = useAccountsActions()
+  const [selectedAccount, setSelectedAccount] = useState(
+    () => accounts[0] || { label: 'New account' }
+  )
 
   function openNew() {
-    setConfig({ label: 'New config' })
+    setSelectedAccount({ label: 'New account' })
     openSelected()
   }
 
@@ -27,9 +24,15 @@ export default function ConfigSection() {
     setFormOpen(true)
   }
 
-  function handleDelete() {}
+  function handleDelete() {
+    configActions[ACCOUNT_ACTIONS.DELETE](selectedAccount.apikey)
+  }
 
-  function handleSave() {}
+  function handleSave(newConfig) {
+    const isNew = !selectedAccount.apikey
+    const action = isNew ? ACCOUNT_ACTIONS.CREATE : ACCOUNT_ACTIONS.UPDATE
+    configActions[action](newConfig)
+  }
 
   return (
     <div className="px-4 py-6">
@@ -38,7 +41,7 @@ export default function ConfigSection() {
           htmlFor="config_select"
           className="block text-sm font-medium text-gray-700"
         >
-          Configuration
+          Account
         </label>
         <span className="flex-auto"></span>
         <Button
@@ -58,7 +61,11 @@ export default function ConfigSection() {
         </Button>
       </div>
       <div className="mt-2 relative rounded-md shadow-sm">
-        <Select selected={config} onChange={setConfig} options={OPTS} />
+        <Select
+          selected={selectedAccount}
+          onChange={setSelectedAccount}
+          options={accounts}
+        />
       </div>
       <Transition
         show={formOpen}
@@ -67,8 +74,8 @@ export default function ConfigSection() {
         leaveFrom="opacity-100"
         leaveTo="opacity-0"
       >
-        <ConfigForm
-          config={config}
+        <AccountForm
+          config={selectedAccount}
           onClose={() => setFormOpen(false)}
           onDelete={handleDelete}
           onSave={handleSave}
