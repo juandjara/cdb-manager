@@ -25,7 +25,7 @@ export default function TableList() {
     <Collapsible
       title="Tables / Views"
       badge={badge}
-      corner={<RefreshButton loading={isFetching} onClick={refetch} />}
+      corner={data && <RefreshButton loading={isFetching} onClick={refetch} />}
     >
       <List
         items={data}

@@ -14,7 +14,7 @@ export default function FunctionList() {
     <Collapsible
       title="Functions"
       badge={badge}
-      corner={<RefreshButton loading={isFetching} onClick={refetch} />}
+      corner={data && <RefreshButton loading={isFetching} onClick={refetch} />}
     >
       <List items={data} getTitle="name" />
     </Collapsible>

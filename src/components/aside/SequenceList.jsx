@@ -14,7 +14,7 @@ export default function SequenceList() {
     <Collapsible
       title="Sequences"
       badge={badge}
-      corner={<RefreshButton loading={isFetching} onClick={refetch} />}
+      corner={data && <RefreshButton loading={isFetching} onClick={refetch} />}
     >
       <List items={data} getTitle="name" />
     </Collapsible>
