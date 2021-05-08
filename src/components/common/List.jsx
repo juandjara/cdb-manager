@@ -26,6 +26,9 @@ export default function List({
           <p className="text-sm mx-1">{applyAccesor(d, getSecondary)}</p>
         </li>
       ))}
+      {items.length === 0 && (
+        <li className="text-sm text-gray-700 px-2">No data</li>
+      )}
     </ul>
   )
 }
