@@ -14,9 +14,9 @@ export default function List({
 }) {
   return (
     <ul className="max-h-96 overflow-auto text-gray-700 space-y-2 py-2 border-2 border-blue-100 shadow-sm rounded-lg mt-2">
-      {items.map((d) => (
+      {items.map((d, i) => (
         <li
-          key={d.id}
+          key={d.id || i}
           className="hover:bg-blue-50 rounded-lg flex justify-between items-center p-2"
         >
           <div>

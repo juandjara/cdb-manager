@@ -24,7 +24,7 @@ export const QUERIES = {
       AND pg_roles.rolname = current_user
   `,
   SEQUENCES: `
-    SELECT pg_class.relname
+    SELECT pg_class.relname as name
     FROM pg_class, pg_roles, pg_namespace
     WHERE pg_roles.oid = pg_class.relowner 
       AND pg_roles.rolname = current_user

@@ -1,7 +1,7 @@
 import React from 'react'
 import AccountConfig from './AccountConfig'
-import Collapsible from './Collapsible'
 import FunctionList from './FunctionList'
+import SequenceList from './SequenceList'
 import TableList from './TableList'
 
 export default function Aside() {
@@ -14,7 +14,7 @@ export default function Aside() {
         </p>
         <TableList />
         <FunctionList />
-        <Collapsible title="Sequences">Desplegable 1</Collapsible>
+        <SequenceList />
       </nav>
     </aside>
   )

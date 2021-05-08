@@ -5,12 +5,12 @@ import Collapsible from './Collapsible'
 import List from './List'
 import Tag from './Tag'
 
-export default function FunctionList() {
-  const { data } = useSQL(QUERIES.FUNCTIONS)
+export default function SequenceList() {
+  const { data } = useSQL(QUERIES.SEQUENCES)
 
   return (
     <Collapsible
-      title="Functions"
+      title="Sequences"
       badge={<Tag color="blue">{data && data.length}</Tag>}
     >
       <List items={data} getTitle="name" />
