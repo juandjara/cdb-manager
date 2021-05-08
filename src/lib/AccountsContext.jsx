@@ -1,4 +1,3 @@
-import { nanoid } from 'nanoid'
 import React, { createContext, useContext, useEffect, useReducer } from 'react'
 
 export const ACCOUNTS_KEY = 'CDB_Manager_Accounts'
@@ -17,7 +16,7 @@ function reducer(state, action) {
   const { type, payload } = action
   switch (type) {
     case ACCOUNT_ACTIONS.CREATE:
-      return state.concat({ ...payload, id: nanoid() })
+      return state.concat(payload)
     case ACCOUNT_ACTIONS.UPDATE:
       return state.map((opt) =>
         opt.id === payload.id ? { ...opt, ...payload } : opt

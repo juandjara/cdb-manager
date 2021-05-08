@@ -18,15 +18,14 @@ function getTypeLabel({ table_type }) {
 }
 
 export default function TableList() {
-  const { data, isFetching, refetch } = useSQL(QUERIES.TABLES)
+  const { data, isError, isFetching, refetch } = useSQL(QUERIES.TABLES)
   const badge = <Tag color="blue">{data && data.length}</Tag>
+  const refresh = (data.length > 0 || isError) && (
+    <RefreshButton loading={isFetching} onClick={refetch} />
+  )
 
   return (
-    <Collapsible
-      title="Tables / Views"
-      badge={badge}
-      corner={data && <RefreshButton loading={isFetching} onClick={refetch} />}
-    >
+    <Collapsible title="Tables / Views" badge={badge} corner={refresh}>
       <List
         items={data}
         getTitle="name"

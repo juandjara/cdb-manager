@@ -18,7 +18,9 @@ export default function useSQL(query) {
 
   useEffect(() => {
     if (result.error) {
-      setAlert(JSON.stringify(result.error))
+      // eslint-disable-next-line no-console
+      console.error(result.error)
+      setAlert(result.error.message)
     }
   }, [result.error, setAlert])
 

@@ -7,15 +7,14 @@ import List from '@/components/common/List'
 import Tag from '@/components/common/Tag'
 
 export default function FunctionList() {
-  const { data, isFetching, refetch } = useSQL(QUERIES.FUNCTIONS)
+  const { data, isError, isFetching, refetch } = useSQL(QUERIES.FUNCTIONS)
   const badge = <Tag color="blue">{data && data.length}</Tag>
+  const refresh = (data.length > 0 || isError) && (
+    <RefreshButton loading={isFetching} onClick={refetch} />
+  )
 
   return (
-    <Collapsible
-      title="Functions"
-      badge={badge}
-      corner={data && <RefreshButton loading={isFetching} onClick={refetch} />}
-    >
+    <Collapsible title="Functions" badge={badge} corner={refresh}>
       <List items={data} getTitle="name" />
     </Collapsible>
   )

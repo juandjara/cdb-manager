@@ -5,6 +5,7 @@ import AccountForm from './AccountForm'
 import Button from '@/components/common/Button'
 import Select from '@/components/common/Select'
 import { ACCOUNT_ACTIONS } from '@/lib/AccountsContext'
+import { nanoid } from 'nanoid'
 
 export default function AccountConfig() {
   const [formOpen, setFormOpen] = useState(false)
@@ -32,7 +33,11 @@ export default function AccountConfig() {
   }
 
   function handleSave(newConfig) {
-    const isNew = !selectedAccount
+    const isNew = !newConfig.id
+    if (isNew) {
+      newConfig.id = nanoid()
+    }
+
     const action = isNew ? ACCOUNT_ACTIONS.CREATE : ACCOUNT_ACTIONS.UPDATE
     configActions[action](newConfig)
     setFormOpen(false)
