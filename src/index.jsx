@@ -2,18 +2,10 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import App from './App.jsx'
 import './index.css'
-import { ConfigProvider } from './lib/AccountsContext.jsx'
-import { QueryClientProvider, QueryClient } from 'react-query'
-
-const apiClient = new QueryClient()
 
 ReactDOM.render(
   <React.StrictMode>
-    <ConfigProvider>
-      <QueryClientProvider client={apiClient}>
-        <App />
-      </QueryClientProvider>
-    </ConfigProvider>
+    <App />
   </React.StrictMode>,
   document.getElementById('root')
 )
