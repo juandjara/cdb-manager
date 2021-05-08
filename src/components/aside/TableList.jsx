@@ -1,9 +1,9 @@
 import React from 'react'
-import Collapsible from './Collapsible'
+import Collapsible from './common/Collapsible'
 import { QUERIES } from '@/lib/asideQueries'
 import useSQL from '@/lib/useSQL'
-import Tag from './Tag'
-import List from './List'
+import Tag from './common/Tag'
+import List from './common/List'
 
 const RELKIND_LABEL = {
   r: '',

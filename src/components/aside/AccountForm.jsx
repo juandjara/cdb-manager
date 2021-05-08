@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import Button from './Button'
-import Input from './Input'
+import Button from './common/Button'
+import Input from './common/Input'
 
 export const buttonFocusStyle =
   'focus:outline-none focus:ring focus:ring-offset-0 focus:ring-blue-500 focus:ring-offset-transparent'

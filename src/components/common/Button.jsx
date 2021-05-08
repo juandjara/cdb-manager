@@ -21,6 +21,8 @@ export default function Button({
 
   const style = `${className} ${buttonFocusStyle} ${padding} ${backgroundColor} ${textColor} ${base}`
   return (
-    <button {...props} className={style}>{children}</button>
+    <button {...props} className={style}>
+      {children}
+    </button>
   )
 }

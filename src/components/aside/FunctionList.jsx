@@ -1,9 +1,9 @@
 import { QUERIES } from '@/lib/asideQueries'
 import useSQL from '@/lib/useSQL'
 import React from 'react'
-import Collapsible from './Collapsible'
-import List from './List'
-import Tag from './Tag'
+import Collapsible from './common/Collapsible'
+import List from './common/List'
+import Tag from './common/Tag'
 
 export default function FunctionList() {
   const { data } = useSQL(QUERIES.FUNCTIONS)
