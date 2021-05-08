@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import Aside from '@/components/Aside'
+import Aside from '@/components/aside/Aside'
 
 const Grid = styled.div`
   min-height: 100vh;

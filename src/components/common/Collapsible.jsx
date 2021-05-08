@@ -9,7 +9,7 @@ function iconStyle(open, color) {
 function triggerStyle(open, color) {
   const focus = `focus:outline-none focus-visible:ring focus-visible:ring-${color}-500 focus-visible:ring-opacity-75`
   const background = open ? `bg-${color}-50` : `hover:bg-${color}-50`
-  const layout = `flex items-center justify-between w-full p-2 pr-3 rounded-lg font-medium text-left text-${color}-900`
+  const layout = `group flex items-center justify-between w-full p-2 pr-3 rounded-lg font-medium text-left text-${color}-900`
   return [focus, background, layout].join(' ')
 }
 

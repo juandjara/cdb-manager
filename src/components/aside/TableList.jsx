@@ -1,9 +1,10 @@
 import React from 'react'
-import Collapsible from './common/Collapsible'
 import { QUERIES } from '@/lib/asideQueries'
 import useSQL from '@/lib/useSQL'
-import Tag from './common/Tag'
-import List from './common/List'
+import Collapsible from '@/components/common/Collapsible'
+import Tag from '@/components/common/Tag'
+import List from '@/components/common/List'
+import RefreshButton from '../common/RefreshButton'
 
 const RELKIND_LABEL = {
   r: '',
@@ -17,12 +18,14 @@ function getTypeLabel({ table_type }) {
 }
 
 export default function TableList() {
-  const { data } = useSQL(QUERIES.TABLES)
+  const { data, isFetching, refetch } = useSQL(QUERIES.TABLES)
+  const badge = <Tag color="blue">{data && data.length}</Tag>
 
   return (
     <Collapsible
       title="Tables / Views"
-      badge={<Tag color="blue">{data && data.length}</Tag>}
+      badge={badge}
+      corner={<RefreshButton loading={isFetching} onClick={refetch} />}
     >
       <List
         items={data}

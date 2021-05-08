@@ -1,9 +1,9 @@
 import { useAccounts, useAccountsActions } from '@/lib/AccountsContext'
 import { Transition } from '@headlessui/react'
 import React, { useState } from 'react'
-import Button from '../common/Button'
 import AccountForm from './AccountForm'
-import Select from '../common/Select'
+import Button from '@/components/common/Button'
+import Select from '@/components/common/Select'
 import { ACCOUNT_ACTIONS } from '@/lib/AccountsContext'
 
 export default function AccountConfig() {
