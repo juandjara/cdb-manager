@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import Collapsible from './Collapsible'
 import { QUERIES } from '@/lib/asideQueries'
 import useSQL from '@/lib/useSQL'
+import Tag from './Tag'
 
 const RELKIND_LABEL = {
   r: '',
@@ -18,10 +19,16 @@ export default function TableList() {
   const { data } = useSQL(QUERIES.TABLES)
 
   return (
-    <Collapsible title="Tables / Views">
+    <Collapsible
+      title="Tables / Views"
+      badge={<Tag color="blue">{data && data.length}</Tag>}
+    >
       <ul className="max-h-96 overflow-auto text-gray-700 space-y-2 py-2">
         {(data || []).map((d) => (
-          <li className="hover:bg-blue-50 rounded-lg flex justify-between items-center p-2" key={d.id}>
+          <li
+            key={d.id}
+            className="hover:bg-blue-50 rounded-lg flex justify-between items-center p-2"
+          >
             <div>
               <p className="text-base">{d.name}</p>
               <p className="text-gray-500">
