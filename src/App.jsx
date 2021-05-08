@@ -43,9 +43,14 @@ export default function App() {
       </header>
       <Aside />
       <main></main>
-      <footer className="py-4 px-6 border-t border-gray-200">
-        <a href="https://github.com/juandjara/cdb-manager">
-          Made with work by juandjara
+      <footer className="text-sm py-4 px-4 border-t border-gray-200 bg-gray-50 z-20">
+        <span>Caught any bug? Want to improve the website? </span>
+        <a
+          rel="noopener noreferrer"
+          href="https://github.com/juandjara/cdb-manager"
+          className="font-semibold hover:underline"
+        >
+          Collaborate on Github
         </a>
       </footer>
     </Grid>
