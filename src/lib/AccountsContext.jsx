@@ -53,6 +53,11 @@ export function useAccounts() {
   return useContext(AccountContext)
 }
 
+export function useSelectedAccount() {
+  const accounts = useAccounts()
+  return accounts.find((a) => a.selected)
+}
+
 export function useAccountsActions() {
   const dispatch = useContext(DispatchContext)
   const actions = {}

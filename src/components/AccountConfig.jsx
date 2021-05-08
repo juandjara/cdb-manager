@@ -6,7 +6,7 @@ import AccountForm from './AccountForm'
 import Select from './Select'
 import { ACCOUNT_ACTIONS } from '@/lib/AccountsContext'
 
-export default function AccountSection() {
+export default function AccountConfig() {
   const [formOpen, setFormOpen] = useState(false)
   const accounts = useAccounts()
   const configActions = useAccountsActions()

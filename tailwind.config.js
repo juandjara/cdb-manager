@@ -1,7 +1,12 @@
 module.exports = {
   purge: ['./public/**/*.html', './src/**/*.{js,jsx}'],
-  plugins: [
-    require('@tailwindcss/forms')
-  ]
+  variants: {
+    extend: {
+      ringWidth: ['focus-visible'],
+      ringColor: ['focus-visible'],
+      ringOpacity: ['focus-visible']
+    }
+  },
+  plugins: [require('@tailwindcss/forms')]
   // specify other options here
-};
+}
