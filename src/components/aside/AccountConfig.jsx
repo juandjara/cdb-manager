@@ -13,7 +13,7 @@ export default function AccountConfig() {
   const selectedAccount = accounts.find((a) => a.selected)
 
   function setSelectedAccount(account) {
-    configActions[ACCOUNT_ACTIONS.SELECT](account && account.apikey)
+    configActions[ACCOUNT_ACTIONS.SELECT](account && account.id)
   }
 
   function openNew() {
@@ -26,7 +26,7 @@ export default function AccountConfig() {
   }
 
   function handleDelete() {
-    configActions[ACCOUNT_ACTIONS.DELETE](selectedAccount.apikey)
+    configActions[ACCOUNT_ACTIONS.DELETE](selectedAccount.id)
     setFormOpen(false)
     setSelectedAccount(null)
   }
@@ -67,7 +67,7 @@ export default function AccountConfig() {
       </div>
       <div className="mt-2 relative rounded-md shadow-sm">
         <Select
-          valueKey="apikey"
+          valueKey="id"
           selected={selectedAccount}
           onChange={setSelectedAccount}
           options={accounts}

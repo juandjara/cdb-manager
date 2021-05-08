@@ -14,6 +14,7 @@ export default function AccountForm({
 }) {
   const isNew = !config
   const [form, setForm] = useState(() => ({
+    id: config.id,
     label: (config && config.label) || '',
     username: (config && config.username) || '',
     apikey: (config && config.apikey) || '',

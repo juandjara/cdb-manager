@@ -1,3 +1,4 @@
+import { nanoid } from 'nanoid'
 import React, { createContext, useContext, useEffect, useReducer } from 'react'
 
 export const ACCOUNTS_KEY = 'CDB_Manager_Accounts'
@@ -16,16 +17,16 @@ function reducer(state, action) {
   const { type, payload } = action
   switch (type) {
     case ACCOUNT_ACTIONS.CREATE:
-      return state.concat(payload)
+      return state.concat({ ...payload, id: nanoid() })
     case ACCOUNT_ACTIONS.UPDATE:
       return state.map((opt) =>
-        opt.apikey === payload.apikey ? { ...opt, ...payload } : opt
+        opt.id === payload.id ? { ...opt, ...payload } : opt
       )
     case ACCOUNT_ACTIONS.DELETE:
-      return state.filter((opt) => opt.apikey !== payload)
+      return state.filter((opt) => opt.id !== payload)
     case ACCOUNT_ACTIONS.SELECT:
       return state.map((opt) => {
-        const selected = opt.apikey === payload
+        const selected = opt.id === payload
         return { ...opt, selected }
       })
     default:
