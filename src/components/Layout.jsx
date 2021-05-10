@@ -1,6 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
 import Aside from '@/components/aside/Aside'
+import { Router } from '@reach/router'
+import FunctionDetails from '@/views/FunctionDetails'
 
 const Grid = styled.div`
   min-height: 100vh;
@@ -35,6 +37,16 @@ const Grid = styled.div`
   }
 `
 
+function Hello() {
+  return (
+    <div className="p-4 my-8 text-center">
+      <span role="img" aria-label="Hello!" title="Hello!" className="text-4xl">
+        👋
+      </span>
+    </div>
+  )
+}
+
 export default function Layout() {
   return (
     <Grid>
@@ -42,7 +54,12 @@ export default function Layout() {
         <h1 className="text-2xl font-medium">CDB Manager</h1>
       </header>
       <Aside />
-      <main></main>
+      <main>
+        <Router>
+          <Hello path="/" />
+          <FunctionDetails path="/functions/:name" />
+        </Router>
+      </main>
       <footer className="text-sm py-4 px-4 border-t border-gray-200 bg-gray-50 z-20">
         <span>Caught any bug? Want to improve the website? </span>
         <a
