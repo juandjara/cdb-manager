@@ -24,5 +24,8 @@ export default function useSQL(query) {
     }
   }, [result.error, setAlert])
 
-  return result
+  return {
+    ...result,
+    data: result.data || []
+  }
 }

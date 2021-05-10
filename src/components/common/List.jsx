@@ -17,7 +17,7 @@ export default function List({
       {items.map((d, i) => (
         <li
           key={d.id || i}
-          className="hover:bg-blue-50 rounded-lg flex justify-between items-center p-2"
+          className="hover:bg-blue-50 rounded-lg flex justify-between items-center px-4 py-2"
         >
           <div>
             <p className="text-base">{applyAccesor(d, getTitle)}</p>
