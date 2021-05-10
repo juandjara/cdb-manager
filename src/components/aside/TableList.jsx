@@ -20,7 +20,7 @@ function getTypeLabel({ table_type }) {
 export default function TableList() {
   const { data, isError, isFetching, refetch } = useSQL(QUERIES.TABLES)
   const badge = <Tag color="blue">{data && data.length}</Tag>
-  const refresh = (data.length > 0 || isError) && (
+  const refresh = ((data && data.length > 0) || isError) && (
     <RefreshButton loading={isFetching} onClick={refetch} />
   )
 
