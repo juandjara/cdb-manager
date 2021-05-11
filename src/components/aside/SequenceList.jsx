@@ -31,7 +31,7 @@ export default function SequenceList() {
   return (
     <Collapsible title="Sequences" badge={badge} corner={refresh}>
       {data.length && <SearchBox onChange={setSearch} />}
-      <List items={data} getTitle="name" />
+      <List items={data} getTitle="name" getLink={(d) => `/seq/${d.name}`} />
     </Collapsible>
   )
 }

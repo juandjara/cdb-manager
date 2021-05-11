@@ -45,6 +45,7 @@ export default function TableList() {
       <List
         items={filteredData}
         getTitle="name"
+        getLink={(d) => `/table/${d.name}`}
         getSubtitle={(d) => (
           <>
             <span className="text-sm mr-1">{d.row_count.toLocaleString()}</span>
