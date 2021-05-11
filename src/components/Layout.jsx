@@ -47,19 +47,14 @@ function Hello() {
   )
 }
 
-export default function Layout() {
+function GridLayout({ path, route: Route }) {
   return (
     <Grid>
       <header className="border-b border-gray-200 py-4 px-6">
         <h1 className="text-2xl font-medium">CDB Manager</h1>
       </header>
       <Aside />
-      <main>
-        <Router>
-          <Hello path="/" />
-          <FunctionDetails path="/functions/:name" />
-        </Router>
-      </main>
+      <main>{<Route path={path} />}</main>
       <footer className="text-sm py-4 px-4 border-t border-gray-200 bg-gray-50 z-20">
         <span>Caught any bug? Want to improve the website? </span>
         <a
@@ -71,5 +66,14 @@ export default function Layout() {
         </a>
       </footer>
     </Grid>
+  )
+}
+
+export default function Layout() {
+  return (
+    <Router>
+      <GridLayout path="/" route={Hello} />
+      <GridLayout path="/functions/:name" route={FunctionDetails} />
+    </Router>
   )
 }
