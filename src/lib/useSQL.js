@@ -20,7 +20,11 @@ export default function useSQL(query) {
     if (result.error) {
       // eslint-disable-next-line no-console
       console.error(result.error)
-      setAlert(result.error.message)
+      let msg = result.error.message
+      if (result.error.response.data && result.error.response.data.error) {
+        msg = String(result.error.response.data.error)
+      }
+      setAlert(msg)
     }
   }, [result.error, setAlert])
 

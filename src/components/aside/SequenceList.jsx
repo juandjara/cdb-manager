@@ -7,8 +7,10 @@ import Tag from '@/components/common/Tag'
 import RefreshButton from '../common/RefreshButton'
 import SearchBox from '../common/SearchBox'
 import useDebounce from '@/lib/useDebounce'
+import { useParams } from '@reach/router'
 
 export default function SequenceList() {
+  const { seqName } = useParams()
   const [search, setSearch] = useState('')
   const debouncedSearch = useDebounce(search, 300)
 
@@ -28,10 +30,22 @@ export default function SequenceList() {
     <RefreshButton loading={isFetching} onClick={refetch} />
   )
 
+  function getTitle(d) {
+    if (d.name === seqName) {
+      return <span className="text-blue-700 font-semibold">{d.name}</span>
+    } else {
+      return d.name
+    }
+  }
+
   return (
     <Collapsible title="Sequences" badge={badge} corner={refresh}>
       {data.length && <SearchBox onChange={setSearch} />}
-      <List items={data} getTitle="name" getLink={(d) => `/seq/${d.name}`} />
+      <List
+        items={data}
+        getTitle={getTitle}
+        getLink={(d) => `/seq/${d.name}`}
+      />
     </Collapsible>
   )
 }

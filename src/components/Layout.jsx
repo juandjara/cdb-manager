@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import Aside from '@/components/aside/Aside'
 import { Router } from '@reach/router'
 import FunctionDetails from '@/views/FunctionDetails'
+import SequenceDetails from '@/views/SequenceDetails'
 
 const Grid = styled.div`
   min-height: 100vh;
@@ -73,7 +74,8 @@ export default function Layout() {
   return (
     <Router>
       <GridLayout path="/" route={Hello} />
-      <GridLayout path="/functions/:fnName" route={FunctionDetails} />
+      <GridLayout path="/fn/:fnName" route={FunctionDetails} />
+      <GridLayout path="/seq/:seqName" route={SequenceDetails} />
     </Router>
   )
 }

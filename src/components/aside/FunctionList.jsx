@@ -32,7 +32,7 @@ export default function FunctionList() {
 
   function getTitle(d) {
     if (d.name === fnName) {
-      return <span className="text-blue-700">{d.name}</span>
+      return <span className="text-blue-700 font-semibold">{d.name}</span>
     } else {
       return d.name
     }
@@ -41,11 +41,7 @@ export default function FunctionList() {
   return (
     <Collapsible title="Functions" badge={badge} corner={refresh}>
       {data.length && <SearchBox onChange={setSearch} />}
-      <List
-        items={data}
-        getTitle={getTitle}
-        getLink={(d) => `/functions/${d.name}`}
-      />
+      <List items={data} getTitle={getTitle} getLink={(d) => `/fn/${d.name}`} />
     </Collapsible>
   )
 }
