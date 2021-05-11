@@ -73,7 +73,7 @@ export default function Layout() {
   return (
     <Router>
       <GridLayout path="/" route={Hello} />
-      <GridLayout path="/functions/:name" route={FunctionDetails} />
+      <GridLayout path="/functions/:fnName" route={FunctionDetails} />
     </Router>
   )
 }

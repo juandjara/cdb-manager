@@ -9,9 +9,9 @@ import { useParams } from '@reach/router'
 
 export default function FunctionDetails() {
   const { data } = useSQL(QUERIES.FUNCTIONS)
-  const { name } = useParams()
+  const { fnName } = useParams()
   const SQLMutation = useSQLMutation()
-  const sqlFunction = data.find((d) => d.name === name)
+  const sqlFunction = data.find((d) => d.name === fnName)
   const [code, setCode] = useState(sqlFunction?.definition)
   const setAlert = useAlertSetter()
 

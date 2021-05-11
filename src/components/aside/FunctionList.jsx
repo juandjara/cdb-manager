@@ -7,8 +7,10 @@ import List from '@/components/common/List'
 import Tag from '@/components/common/Tag'
 import SearchBox from '../common/SearchBox'
 import useDebounce from '@/lib/useDebounce'
+import { useParams } from '@reach/router'
 
 export default function FunctionList() {
+  const { fnName } = useParams()
   const [search, setSearch] = useState('')
   const debouncedSearch = useDebounce(search, 300)
 
@@ -28,13 +30,21 @@ export default function FunctionList() {
     <RefreshButton loading={isFetching} onClick={refetch} />
   )
 
+  function getTitle(d) {
+    if (d.name === fnName) {
+      return <span className="text-blue-700">{d.name}</span>
+    } else {
+      return d.name
+    }
+  }
+
   return (
     <Collapsible title="Functions" badge={badge} corner={refresh}>
       {data.length && <SearchBox onChange={setSearch} />}
       <List
         items={data}
-        getTitle="name"
-        getLink={d => `/functions/${d.name}`}
+        getTitle={getTitle}
+        getLink={(d) => `/functions/${d.name}`}
       />
     </Collapsible>
   )
