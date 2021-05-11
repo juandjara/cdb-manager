@@ -1,22 +1,55 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import Editor from 'react-simple-code-editor'
-import { highlight, languages } from 'prismjs/components/prism-core'
-import 'prismjs/components/prism-sql'
-import 'prismjs/themes/prism.css'
+import Highlight, { defaultProps } from 'prism-react-renderer'
+import theme from 'prism-react-renderer/themes/github'
+import styled from 'styled-components'
+
+const Line = styled.div`
+  position: relative;
+  &::before {
+    position: absolute;
+    right: 100%;
+    margin-right: 16px;
+    text-align: right;
+    opacity: 0.4;
+    user-select: none;
+    counter-increment: line;
+    content: counter(line);
+  }
+`
 
 function noop() {}
 
 export default function CodeEditor({ value = '', onChange = noop }) {
   return (
-    <Editor
-      value={value}
-      onValueChange={onChange}
-      highlight={(code) => highlight(code, languages.sql, 'sql')}
-      padding={10}
-      style={{
-        fontFamily: '"Fira code", "Fira Mono", monospace',
-        fontSize: 16
-      }}
-    />
+    <div style={{ paddingLeft: '3rem', backgroundColor: '#f4f4f4' }}>
+      <Editor
+        value={value}
+        onValueChange={onChange}
+        highlight={(code) => (
+          <Highlight {...defaultProps} theme={theme} code={code} language="sql">
+            {({ className, style, tokens, getLineProps, getTokenProps }) => (
+              <Fragment>
+                {tokens.map((line, i) => (
+                  <Line {...getLineProps({ line, key: i })}>
+                    {line.map((token, key) => (
+                      <span {...getTokenProps({ token, key })} />
+                    ))}
+                  </Line>
+                ))}
+              </Fragment>
+            )}
+          </Highlight>
+        )}
+        padding={10}
+        style={{
+          backgroundColor: 'white',
+          fontFamily: '"Fira code", "Fira Mono", monospace',
+          fontSize: 16,
+          counterReset: 'line',
+          overflow: 'visible'
+        }}
+      />
+    </div>
   )
 }
