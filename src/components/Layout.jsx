@@ -33,6 +33,7 @@ const Grid = styled.div`
   }
   > main {
     grid-area: main;
+    min-width: 0;
   }
   > footer {
     grid-area: footer;

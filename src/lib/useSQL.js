@@ -13,7 +13,7 @@ export default function useSQL(query) {
   const result = useQuery(
     [query, credentials],
     () => executeSQL({ credentials, cancelToken, query }),
-    { enabled: !!credentials }
+    { enabled: !!query && !!credentials }
   )
 
   useEffect(() => {

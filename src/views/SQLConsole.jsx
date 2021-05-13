@@ -1,29 +1,73 @@
-import React, { useState } from 'react'
-import useSQLMutation from '@/lib/useSQLMutation'
+import React, { useMemo, useState } from 'react'
 import CodeEditor from '@/components/common/CodeEditor'
 import Button from '@/components/common/Button'
+import useSQL from '@/lib/useSQL'
+import DataTable from 'react-data-table-component'
 
 export default function SQLConsole() {
-  const [code, setCode] = useState('')
-  const SQLMutation = useSQLMutation()
+  const [query, setQuery] = useState('')
+  const [newQuery, setNewQuery] = useState('')
+  const { data, isLoading } = useSQL(query)
 
-  function updateDefinition() {
-    SQLMutation.mutateAsync(code).then((rows) => {
-      console.log(rows)
-    })
+  const columns = useMemo(() => {
+    if (!data[0]) {
+      return []
+    }
+
+    const keys = Object.keys(data[0])
+    return keys.map((key) => ({
+      name: key,
+      selector: key,
+      style: {
+        maxWidth: '200px'
+      }
+    }))
+  }, [data])
+
+  function runQuery() {
+    setQuery(newQuery)
   }
 
   return (
-    <div className="p-6 space-y-4">
+    <div className="p-6 max-w-7xl">
       <div
-        style={{ minHeight: '300px', maxHeight: 'calc(100vh - 230px)' }}
+        style={{ minHeight: '348px', maxHeight: 'calc(100vh - 230px)' }}
         className="overflow-auto border-2 border-gray-300 rounded-lg"
       >
-        <CodeEditor style={{ minHeight: 'inherit' }} value={code} onChange={setCode} />
+        <CodeEditor
+          value={newQuery}
+          onChange={setNewQuery}
+          style={{ minHeight: 'inherit' }}
+        />
       </div>
-      <Button onClick={updateDefinition} color="blue">
+      <Button className="mt-4" onClick={runQuery} color="blue">
         Run Query
       </Button>
+      <div className="mt-8 border-gray-200">
+        {query && (
+          <DataTable
+            keyField="cartodb_id"
+            noHeader
+            responsive
+            pagination
+            loading={isLoading}
+            columns={columns}
+            data={data}
+            customStyles={{
+              pagination: {
+                style: {
+                  '& select': {
+                    minWidth: '36px'
+                  },
+                  '& select + svg': {
+                    display: 'none'
+                  }
+                }
+              }
+            }}
+          />
+        )}
+      </div>
     </div>
   )
 }
