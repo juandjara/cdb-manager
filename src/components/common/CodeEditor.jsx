@@ -20,9 +20,9 @@ const Line = styled.div`
 
 function noop() {}
 
-export default function CodeEditor({ value = '', onChange = noop }) {
+export default function CodeEditor({ style, value = '', onChange = noop, ...props }) {
   return (
-    <div style={{ paddingLeft: '3rem', backgroundColor: '#f4f4f4' }}>
+    <div style={{ paddingLeft: '3rem', backgroundColor: '#f4f4f4', ...style }} {...props}>
       <Editor
         value={value}
         onValueChange={onChange}
@@ -43,6 +43,7 @@ export default function CodeEditor({ value = '', onChange = noop }) {
         )}
         padding={10}
         style={{
+          minHeight: 'inherit',
           backgroundColor: 'white',
           fontFamily: '"Fira code", "Fira Mono", monospace',
           fontSize: 16,
