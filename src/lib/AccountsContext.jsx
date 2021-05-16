@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useEffect, useReducer } from 'react'
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useReducer
+} from 'react'
 
 export const ACCOUNTS_KEY = 'CDB_Manager_Accounts'
 const initialState = JSON.parse(localStorage.getItem(ACCOUNTS_KEY) || '[]')
@@ -55,7 +61,7 @@ export function useAccounts() {
 
 export function useSelectedAccount() {
   const accounts = useAccounts()
-  return accounts.find((a) => a.selected)
+  return useMemo(() => accounts.find((a) => a.selected), [accounts])
 }
 
 export function useAccountsActions() {

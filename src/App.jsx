@@ -4,7 +4,13 @@ import { QueryClientProvider, QueryClient } from 'react-query'
 import Layout from '@/components/Layout'
 import { AlertProvider } from './lib/AlertContext.jsx'
 
-const apiClient = new QueryClient()
+const apiClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false
+    }
+  }
+})
 
 export default function App() {
   return (
