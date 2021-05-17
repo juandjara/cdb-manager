@@ -4,6 +4,7 @@ import { useMutation } from 'react-query'
 import { useSelectedAccount } from './AccountsContext'
 import { useAlertSetter } from './AlertContext'
 import executeSQL from './executeSQL'
+import extractErrorMessage from './extractErrorMessage'
 
 export default function useSQLMutation(config = {}) {
   const { token: cancelToken } = axios.CancelToken.source()
@@ -16,16 +17,12 @@ export default function useSQLMutation(config = {}) {
   )
 
   useEffect(() => {
-    if (mutation.isError) {
+    if (mutation.isError && !config.supressErrorAlert) {
       // eslint-disable-next-line no-console
       console.error(mutation.error)
-      let msg = mutation.error.message
-      if (mutation.error.response.data && mutation.error.response.data.error) {
-        msg = String(mutation.error.response.data.error)
-      }
-      setAlert(msg)
+      setAlert(extractErrorMessage(mutation.error))
     }
-  }, [mutation.isError, mutation.error, setAlert])
+  }, [config.supressErrorAlert, mutation.isError, mutation.error, setAlert])
 
   return mutation
 }

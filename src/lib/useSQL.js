@@ -3,6 +3,7 @@ import { useQuery } from 'react-query'
 import { useSelectedAccount } from './AccountsContext'
 import { useAlertSetter } from './AlertContext'
 import executeSQL from './executeSQL'
+import extractErrorMessage from './extractErrorMessage'
 
 export default function useSQL(query) {
   const credentials = useSelectedAccount()
@@ -18,16 +19,13 @@ export default function useSQL(query) {
     if (result.error) {
       // eslint-disable-next-line no-console
       console.error(result.error)
-      let msg = result.error.message
-      if (result.error.response.data && result.error.response.data.error) {
-        msg = String(result.error.response.data.error)
-      }
-      setAlert(msg)
+      setAlert(extractErrorMessage(result.error))
     }
   }, [result.error, setAlert])
 
   return {
     ...result,
-    data: result.data || []
+    time: result.data && result.data.time,
+    data: (result.data && result.data.rows) || []
   }
 }

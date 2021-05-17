@@ -37,7 +37,7 @@ export default function executeSQL({ query, credentials, options }) {
   if (url.length < REQUEST_GET_MAX_URL_LENGTH) {
     promise = axios
       .get(url, { cancelToken: cancelToken.token })
-      .then((res) => res.data.rows)
+      .then((res) => res.data)
   } else {
     const postParams = Object.entries(credentialParams)
       .map((e) => `${e[0]}=${encodeURIComponent(e[1])}`)
@@ -46,7 +46,7 @@ export default function executeSQL({ query, credentials, options }) {
 
     promise = axios
       .post(postUrl, { q: params.q }, { cancelToken: cancelToken.token })
-      .then((res) => res.data.rows)
+      .then((res) => res.data)
   }
 
   promise.cancel = () =>
