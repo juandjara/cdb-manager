@@ -2,9 +2,6 @@ import React, { useState } from 'react'
 import Button from '@/components/common/Button'
 import Input from '@/components/common/Input'
 
-export const buttonFocusStyle =
-  'focus:outline-none focus:ring focus:ring-offset-0 focus:ring-blue-500 focus:ring-offset-transparent'
-
 export default function AccountForm({
   config,
   onClose,
