@@ -11,7 +11,7 @@ export default function Aside() {
   const linkColor = pathname === '/console' ? 'bg-blue-50' : 'hover:bg-blue-50'
 
   return (
-    <aside className="w-96 border-r border-gray-200 shadow-lg">
+    <aside className="w-96 border-r border-gray-200">
       <AccountConfig />
       <nav className="space-y-4 p-3">
         <Link
