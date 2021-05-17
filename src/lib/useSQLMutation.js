@@ -19,7 +19,11 @@ export default function useSQLMutation(config = {}) {
     if (mutation.isError) {
       // eslint-disable-next-line no-console
       console.error(mutation.error)
-      setAlert(mutation.error.message)
+      let msg = mutation.error.message
+      if (mutation.error.response.data && mutation.error.response.data.error) {
+        msg = String(mutation.error.response.data.error)
+      }
+      setAlert(msg)
     }
   }, [mutation.isError, mutation.error, setAlert])
 
