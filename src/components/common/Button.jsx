@@ -12,16 +12,20 @@ export default function Button({
   backgroundColor = 'hover:bg-blue-200 bg-blue-100',
   textColor = 'text-blue-700',
   color,
+  disabled,
   ...props
 }) {
   if (color) {
     backgroundColor = `hover:bg-${color}-200 bg-${color}-100`
     textColor = `text-${color}-700`
   }
+  if (disabled) {
+    className += ' opacity-50 pointer-events-none'
+  }
 
   const style = `${className} ${buttonFocusStyle} ${padding} ${backgroundColor} ${textColor} ${base}`
   return (
-    <button {...props} className={style}>
+    <button {...props} disabled={disabled} className={style}>
       {children}
     </button>
   )
