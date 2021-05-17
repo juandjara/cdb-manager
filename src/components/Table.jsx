@@ -1,6 +1,8 @@
 import React, { useMemo } from 'react'
 import DataTable from 'react-data-table-component'
 
+const CELL_WIDTH = '260px'
+
 export default function Table({ data, isLoading }) {
   const columns = useMemo(() => {
     if (!data[0]) {
@@ -12,7 +14,7 @@ export default function Table({ data, isLoading }) {
       name: key,
       selector: key,
       style: {
-        maxWidth: '200px'
+        maxWidth: CELL_WIDTH
       }
     }))
   }, [data])
@@ -27,6 +29,13 @@ export default function Table({ data, isLoading }) {
       columns={columns}
       data={data}
       customStyles={{
+        headRow: {
+          style: {
+            '& div': {
+              maxWidth: CELL_WIDTH
+            }
+          }
+        },
         pagination: {
           style: {
             '& select': {

@@ -30,5 +30,17 @@ export const QUERIES = {
       AND pg_roles.rolname = current_user
       AND pg_namespace.oid = pg_class.relnamespace
       AND pg_class.relkind = 'S'
+  `,
+  TABLE: (tableid) =>
+    (tableid || tableid === 0) &&
+    `
+    SELECT 
+      attname,
+      format_type(atttypid, atttypmod) as type
+    FROM pg_attribute
+    WHERE attrelid = ${tableid}
+      AND attisdropped = false
+      AND attnum > 0
+    ORDER by attnum
   `
 }

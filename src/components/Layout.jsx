@@ -5,6 +5,7 @@ import { Router } from '@reach/router'
 import FunctionDetails from '@/views/FunctionDetails'
 import SequenceDetails from '@/views/SequenceDetails'
 import SQLConsole from '@/views/SQLConsole'
+import TableDetails from '@/views/TableDetails'
 
 const Grid = styled.div`
   min-height: 100vh;
@@ -79,6 +80,7 @@ export default function Layout() {
       <GridLayout path="/console" route={SQLConsole} />
       <GridLayout path="/fn/:fnName" route={FunctionDetails} />
       <GridLayout path="/seq/:seqName" route={SequenceDetails} />
+      <GridLayout path="/table/:tablename/:tableid" route={TableDetails} />
     </Router>
   )
 }
