@@ -41,8 +41,9 @@ const curryListItem = (listProps) => (rowProps) => (
 export default function List(props) {
   const count = props.items.length
   return (
-    <ul className="max-h-96 overflow-auto text-gray-700 space-y-2 py-2 border-2 border-blue-100 shadow-sm rounded-lg mt-2">
+    <div className="text-gray-700 space-y-2 py-2 mt-2 border-2 border-blue-100 shadow-sm rounded-lg">
       <FixedSizeList
+        innerElementType="ul"
         height={96 * 4}
         width={355}
         itemCount={count}
@@ -51,6 +52,6 @@ export default function List(props) {
         {curryListItem(props)}
       </FixedSizeList>
       {count === 0 && <li className="text-sm text-gray-700 px-2">No data</li>}
-    </ul>
+    </div>
   )
 }

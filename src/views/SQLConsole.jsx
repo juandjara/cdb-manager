@@ -4,6 +4,7 @@ import Button from '@/components/common/Button'
 import useSQLMutation from '@/lib/useSQLMutation'
 import Table from '@/components/Table'
 import extractErrorMessage from '@/lib/extractErrorMessage'
+import { ClockIcon, TableIcon } from '@heroicons/react/outline'
 
 function Panel({ children, color }) {
   return (
@@ -18,6 +19,25 @@ function Panel({ children, color }) {
 export default function SQLConsole() {
   const [query, setQuery] = useState('')
   const mutation = useSQLMutation({ supressErrorAlert: true })
+
+  const columns =
+    mutation.isSuccess &&
+    Object.keys(mutation.data.fields).map((field) => {
+      const type = mutation.data.fields[field].type
+      const column = {
+        name: field,
+        selector: field
+      }
+
+      if (type === 'number') {
+        column.right = true
+      }
+      if (type === 'geometry') {
+        column.format = () => `Geometry`
+      }
+
+      return column
+    })
 
   return (
     <div className="p-6 max-w-7xl">
@@ -48,41 +68,19 @@ export default function SQLConsole() {
           <>
             <Panel color="green">
               <p className="flex items-center space-x-3">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-6 w-6 text-green-500"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
-                  />
-                </svg>
+                <TableIcon className="h-6 w-6 text-green-500" />
                 <span>Total rows: {mutation.data.total_rows}</span>
               </p>
               <p className="flex items-center space-x-3">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-6 w-6 text-green-500"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
+                <ClockIcon className="h-6 w-6 text-green-500" />
                 <span>Server time: {mutation.data.time}s</span>
               </p>
             </Panel>
-            <Table data={mutation.data.rows} isLoading={mutation.isLoading} />
+            <Table
+              columns={columns}
+              data={mutation.data.rows}
+              isLoading={mutation.isLoading}
+            />
           </>
         )}
       </div>
