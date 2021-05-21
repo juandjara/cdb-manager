@@ -11,8 +11,8 @@ function makeColumns(data) {
 
   const keys = Object.keys(data[0])
   return keys.map((key) => ({
-    name: key,
-    selector: key
+    title: key,
+    key
   }))
 }
 

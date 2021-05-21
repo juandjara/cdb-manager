@@ -1,44 +1,44 @@
 import React from 'react'
-import DataTable from 'react-data-table-component'
 
-const CELL_STYLE = {
-  minWidth: '160px',
-  maxWidth: '260px'
+function getCellClass(col) {
+  return `px-5 py-3 text-${col.align || 'left'}`
+}
+
+function defaultCellRender(value) {
+  if (typeof value === 'string' || typeof value === 'number') {
+    return value
+  }
+  return JSON.stringify(value)
 }
 
 export default function Table({ columns = [], data, isLoading }) {
-  const tableColumns = columns.map((c) => ({ ...c, ...CELL_STYLE, style: { padding: '8px 16px' } }))
-
   return (
-    <DataTable
-      keyField="cartodb_id"
-      noHeader
-      responsive
-      pagination
-      loading={isLoading}
-      columns={tableColumns}
-      data={data}
-      customStyles={{
-        headCells: {
-          style: {
-            ...CELL_STYLE,
-            overflow: 'hidden',
-            '& > div:hover': {
-              color: 'initial'
-            }
-          }
-        },
-        pagination: {
-          style: {
-            '& select': {
-              minWidth: '36px'
-            },
-            '& select + svg': {
-              display: 'none'
-            }
-          }
-        }
-      }}
-    />
+    <div className="max-w-full overflow-auto">
+      <table className="table-auto w-full">
+        <thead>
+          <tr>
+            {columns.map((col) => (
+              <th
+                key={col.key}
+                className={`${getCellClass(col)} font-semibold`}
+              >
+                {col.title}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {data.map((row, i) => (
+            <tr key={i} className="border-t border-gray-300">
+              {columns.map((col) => (
+                <td key={col.key} className={`${getCellClass(col)} align-top`}>
+                  {(col.render || defaultCellRender)(row[col.key], row)}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   )
 }

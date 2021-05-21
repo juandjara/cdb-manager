@@ -25,15 +25,15 @@ export default function SQLConsole() {
     Object.keys(mutation.data.fields).map((field) => {
       const type = mutation.data.fields[field].type
       const column = {
-        name: field,
-        selector: field
+        title: field,
+        key: field
       }
 
       if (type === 'number') {
-        column.right = true
+        column.align = 'right'
       }
       if (type === 'geometry') {
-        column.format = () => `Geometry`
+        column.render = () => `Geometry`
       }
 
       return column

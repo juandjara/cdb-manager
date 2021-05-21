@@ -43,10 +43,11 @@ const Grid = styled.div`
 
 function Hello() {
   return (
-    <div className="p-4 my-8 text-center">
+    <div className="p-4 space-y-2">
       <span role="img" aria-label="Hello!" title="Hello!" className="text-4xl">
         👋
       </span>
+      <p>Hello !</p>
     </div>
   )
 }
