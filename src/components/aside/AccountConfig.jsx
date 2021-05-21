@@ -70,14 +70,13 @@ export default function AccountConfig() {
           Edit
         </Button>
       </div>
-      <div className="mt-2 relative rounded-md shadow-sm">
-        <Select
-          valueKey="id"
-          selected={selectedAccount}
-          onChange={setSelectedAccount}
-          options={accounts}
-        />
-      </div>
+      <Select
+        className="mt-3"
+        valueKey="id"
+        selected={selectedAccount}
+        onChange={setSelectedAccount}
+        options={accounts}
+      />
       <Transition
         show={formOpen}
         className="mt-8"
