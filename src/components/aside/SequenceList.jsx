@@ -40,7 +40,7 @@ export default function SequenceList() {
 
   return (
     <Collapsible title="Sequences" badge={badge} corner={refresh}>
-      {data.length && <SearchBox onChange={setSearch} />}
+      {data.length ? <SearchBox onChange={setSearch} /> : null}
       <List
         items={data}
         getTitle={getTitle}

@@ -40,7 +40,7 @@ export default function FunctionList() {
 
   return (
     <Collapsible title="Functions" badge={badge} corner={refresh}>
-      {data.length && <SearchBox onChange={setSearch} />}
+      {data.length ? <SearchBox onChange={setSearch} /> : null}
       <List items={data} getTitle={getTitle} getLink={(d) => `/fn/${d.name}`} />
     </Collapsible>
   )

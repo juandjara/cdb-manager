@@ -41,7 +41,7 @@ export default function TableList() {
 
   return (
     <Collapsible title="Tables / Views" badge={badge} corner={refresh}>
-      {data.length && <SearchBox onChange={setSearch} />}
+      {data.length ? <SearchBox onChange={setSearch} /> : null}
       <List
         items={filteredData}
         getTitle="name"
