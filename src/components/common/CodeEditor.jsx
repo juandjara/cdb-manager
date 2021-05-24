@@ -20,9 +20,17 @@ const Line = styled.div`
 
 function noop() {}
 
-export default function CodeEditor({ style, value = '', onChange = noop, ...props }) {
+export default function CodeEditor({
+  style,
+  value = '',
+  onChange = noop,
+  ...props
+}) {
   return (
-    <div style={{ paddingLeft: '3rem', backgroundColor: '#f4f4f4', ...style }} {...props}>
+    <div
+      style={{ paddingLeft: '3rem', backgroundColor: '#f4f4f4', ...style }}
+      {...props}
+    >
       <Editor
         value={value}
         onValueChange={onChange}

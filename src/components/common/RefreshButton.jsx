@@ -3,7 +3,12 @@ import React from 'react'
 
 function noop() {}
 
-export default function RefreshButton({ className = '', loading, onClick = noop, ...props }) {
+export default function RefreshButton({
+  className = '',
+  loading,
+  onClick = noop,
+  ...props
+}) {
   const loadingStyle = loading
     ? 'animate-spin'
     : 'opacity-0 group-hover:opacity-100'
