@@ -44,6 +44,7 @@ export default function TableList() {
       {data.length ? <SearchBox onChange={setSearch} /> : null}
       <List
         items={filteredData}
+        itemSize={64}
         getTitle="name"
         getLink={(d) => `/table/${d.name}/${d.id}`}
         getSubtitle={(d) => (

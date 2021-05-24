@@ -42,16 +42,18 @@ export default function List(props) {
   const count = props.items.length
   return (
     <div className="text-gray-700 space-y-2 py-2 mt-2 border-2 border-blue-100 shadow-sm rounded-lg">
-      <FixedSizeList
-        innerElementType="ul"
-        height={96 * 4}
-        width={355}
-        itemCount={count}
-        itemSize={64}
-      >
-        {curryListItem(props)}
-      </FixedSizeList>
-      {count === 0 && <li className="text-sm text-gray-700 px-2">No data</li>}
+      {count === 0 && <p className="text-sm text-gray-700 px-2">No data</p>}
+      {count > 0 && (
+        <FixedSizeList
+          innerElementType="ul"
+          height={96 * 4}
+          width={355}
+          itemCount={count}
+          itemSize={props.itemSize || 42}
+        >
+          {curryListItem(props)}
+        </FixedSizeList>
+      )}
     </div>
   )
 }
