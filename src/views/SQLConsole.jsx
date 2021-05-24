@@ -5,6 +5,10 @@ import useSQLMutation from '@/lib/useSQLMutation'
 import Table from '@/components/Table'
 import extractErrorMessage from '@/lib/extractErrorMessage'
 import { ClockIcon, TableIcon } from '@heroicons/react/outline'
+import executeSQL from '@/lib/executeSQL'
+import { useSelectedAccount } from '@/lib/AccountsContext'
+import { useAlertSetter } from '@/lib/AlertContext'
+import downloadBlob from '@/lib/downloadBlob'
 
 function Panel({ children, color }) {
   return (
@@ -17,7 +21,9 @@ function Panel({ children, color }) {
 }
 
 export default function SQLConsole() {
+  const credentials = useSelectedAccount()
   const [query, setQuery] = useState('')
+  const setAlert = useAlertSetter()
   const mutation = useSQLMutation({ supressErrorAlert: true })
 
   const columns =
@@ -38,6 +44,23 @@ export default function SQLConsole() {
 
       return column
     })
+
+  async function downloadCSV() {
+    try {
+      const text = await executeSQL({
+        query,
+        credentials,
+        options: { format: 'csv' }
+      })
+      downloadBlob(text, 'text/csv', 'carto-query.csv')
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.error(err)
+      setAlert(extractErrorMessage(err))
+    }
+  }
+
+  function viewMap() {}
 
   return (
     <div className="p-6 max-w-7xl">
@@ -76,6 +99,10 @@ export default function SQLConsole() {
                 <span>Server time: {mutation.data.time}s</span>
               </p>
             </Panel>
+            <div className="space-x-3 mb-4">
+              <Button onClick={downloadCSV} color="indigo">Download CSV</Button>
+              <Button onClick={viewMap} color="indigo">View map</Button>
+            </div>
             <Table
               columns={columns}
               data={mutation.data.rows}
