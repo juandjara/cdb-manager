@@ -76,7 +76,7 @@ export default function Table({ columns = [], data, isLoading }) {
           </tbody>
         </table>
       </div>
-      <footer className="flex items-center justify-end">
+      <footer className="flex items-center justify-end mt-2">
         <div className="space-x-4 flex items-center mr-8">
           <p className="text-sm text-gray-600">Rows per page: </p>
           <SelectSimple
