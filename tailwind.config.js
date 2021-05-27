@@ -1,5 +1,20 @@
 module.exports = {
-  purge: ['./public/**/*.html', './src/**/*.{js,jsx}'],
+  purge: {
+    content: ['./index.html', './src/**/*.{js,jsx}'],
+    options: {
+      safelist: ['blue', 'red', 'gray', 'green']
+        .map((color) => [
+          `text-${color}-500`,
+          `text-${color}-700`,
+          `text-${color}-900`,
+          `hover:bg-${color}-200`,
+          `bg-${color}-100`,
+          `hover:bg-${color}-50`,
+          `bg-${color}-50`
+        ])
+        .flat()
+    }
+  },
   variants: {
     extend: {
       ringWidth: ['focus-visible'],

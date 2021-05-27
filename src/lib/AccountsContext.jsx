@@ -39,7 +39,7 @@ function reducer(state, action) {
   }
 }
 
-export function ConfigProvider({ children }) {
+export function AccountsProvider({ children }) {
   const [state, dispatch] = useReducer(reducer, initialState)
 
   useEffect(() => {

@@ -1,11 +1,21 @@
-import React from 'react'
+import React, { Suspense, lazy } from 'react'
 import styled from 'styled-components'
 import Aside from '@/components/aside/Aside'
 import { Router } from '@reach/router'
-import FunctionDetails from '@/views/FunctionDetails'
-import SequenceDetails from '@/views/SequenceDetails'
-import SQLConsole from '@/views/SQLConsole'
-import TableDetails from '@/views/TableDetails'
+import Spinner from '@/components/common/Spinner'
+
+function Loader() {
+  return (
+    <div className="p-3">
+      <Spinner />
+    </div>
+  )
+}
+
+const FunctionDetails = lazy(() => import('@/views/FunctionDetails'))
+const SequenceDetails = lazy(() => import('@/views/SequenceDetails'))
+const SQLConsole = lazy(() => import('@/views/SQLConsole'))
+const TableDetails = lazy(() => import('@/views/TableDetails'))
 
 const Grid = styled.div`
   min-height: 100vh;
@@ -60,7 +70,7 @@ function GridLayout({ path, route: Route }) {
       </header>
       <Aside />
       <main>{<Route path={path} />}</main>
-      <footer className="text-sm py-4 px-4 border-t border-gray-200 bg-gray-50 z-20">
+      <footer className="text-sm py-4 px-4 border-t border-gray-200 bg-gray-50">
         <span>Caught any bug? Want to improve the website? </span>
         <a
           rel="noopener noreferrer"
@@ -76,12 +86,14 @@ function GridLayout({ path, route: Route }) {
 
 export default function Layout() {
   return (
-    <Router>
-      <GridLayout path="/" route={Hello} />
-      <GridLayout path="/console" route={SQLConsole} />
-      <GridLayout path="/fn/:fnName" route={FunctionDetails} />
-      <GridLayout path="/seq/:seqName" route={SequenceDetails} />
-      <GridLayout path="/table/:tablename/:tableid" route={TableDetails} />
-    </Router>
+    <Suspense fallback={<Loader />}>
+      <Router>
+        <GridLayout path="/" route={Hello} />
+        <GridLayout path="/console" route={SQLConsole} />
+        <GridLayout path="/fn/:fnName" route={FunctionDetails} />
+        <GridLayout path="/seq/:seqName" route={SequenceDetails} />
+        <GridLayout path="/table/:tablename/:tableid" route={TableDetails} />
+      </Router>
+    </Suspense>
   )
 }

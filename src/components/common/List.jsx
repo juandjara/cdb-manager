@@ -34,9 +34,8 @@ function ItemList({
   )
 }
 
-const curryListItem = (listProps) => (rowProps) => (
+const curryListItem = (listProps) => (rowProps) =>
   <ItemList {...listProps} {...rowProps} />
-)
 
 export default function List(props) {
   const count = props.items.length

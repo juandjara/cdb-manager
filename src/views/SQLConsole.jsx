@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { lazy, Suspense, useState } from 'react'
 import CodeEditor from '@/components/common/CodeEditor'
 import Button from '@/components/common/Button'
 import useSQLMutation from '@/lib/useSQLMutation'
@@ -9,6 +9,8 @@ import executeSQL from '@/lib/executeSQL'
 import { useSelectedAccount } from '@/lib/AccountsContext'
 import { useAlertSetter } from '@/lib/AlertContext'
 import downloadBlob from '@/lib/downloadBlob'
+
+const MapOverlay = lazy(() => import('@/components/MapOverlay'))
 
 function Panel({ children, color }) {
   return (
@@ -23,6 +25,7 @@ function Panel({ children, color }) {
 export default function SQLConsole() {
   const credentials = useSelectedAccount()
   const [query, setQuery] = useState('')
+  const [showMap, setShowMap] = useState(false)
   const setAlert = useAlertSetter()
   const mutation = useSQLMutation({ supressErrorAlert: true })
 
@@ -60,12 +63,17 @@ export default function SQLConsole() {
     }
   }
 
-  function viewMap() {}
-
   return (
-    <div className="p-6 max-w-7xl">
+    <div className="relative h-full p-6">
+      <Suspense fallback={<p></p>}>
+        {showMap ? (
+          <MapOverlay onClose={() => setShowMap(false)} query={query} />
+        ) : (
+          <div></div>
+        )}
+      </Suspense>
       <div
-        style={{ minHeight: '348px', maxHeight: 'calc(100vh - 230px)' }}
+        style={{ minHeight: '348px', maxHeight: 'calc(100vh - 254px)' }}
         className="overflow-auto border-2 border-gray-300 rounded-lg"
       >
         <CodeEditor
@@ -74,14 +82,16 @@ export default function SQLConsole() {
           style={{ minHeight: 'inherit' }}
         />
       </div>
-      <Button
-        disabled={mutation.isLoading}
-        onClick={() => mutation.mutate(query)}
-        className="mt-4"
-        color="blue"
-      >
-        Run Query
-      </Button>
+      <div className="mt-4 space-x-4">
+        <Button
+          disabled={mutation.isLoading}
+          onClick={() => mutation.mutate(query)}
+        >
+          Run Query
+        </Button>
+        <Button onClick={() => setShowMap(true)}>View map</Button>
+      </div>
+
       <div className="mt-8">
         {mutation.isLoading && <Panel color="yellow">Loading ...</Panel>}
         {mutation.isError && (
@@ -98,11 +108,12 @@ export default function SQLConsole() {
                 <ClockIcon className="h-6 w-6 text-green-500" />
                 <span>Server time: {mutation.data.time}s</span>
               </p>
+              <div>
+                <Button className="mt-3" onClick={downloadCSV} color="green">
+                  Download CSV
+                </Button>
+              </div>
             </Panel>
-            <div className="space-x-3 mb-4">
-              <Button onClick={downloadCSV} color="indigo">Download CSV</Button>
-              <Button onClick={viewMap} color="indigo">View map</Button>
-            </div>
             <Table
               columns={columns}
               data={mutation.data.rows}

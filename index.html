@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/src/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Tool to run queries against many carto accounts" />
+    <title>Carto DB Manager</title>
+    <style>
+      body {
+        margin: 0;
+      }
+      .root-loading {
+        font-family: sans-serif;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+      .root-loading h1 {
+        font-weight: normal;
+        font-size: 2rem;
+      }
+      .root-loading p {
+        margin-top: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root">
+      <div class="root-loading">
+        <h1>CDB Manager</h1>
+        <p>Cargando ...</p>
+      </div>
+    </div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
