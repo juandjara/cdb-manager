@@ -24,7 +24,10 @@ function Panel({ children, color }) {
 
 export default function SQLConsole() {
   const credentials = useSelectedAccount()
-  const [query, setQuery] = useState('')
+  const [query, setQuery] = useState(() => {
+    const urlQuery = new URLSearchParams(window.location.search)
+    return urlQuery.get('q') || ''
+  })
   const [showMap, setShowMap] = useState(false)
   const setAlert = useAlertSetter()
   const mutation = useSQLMutation({ supressErrorAlert: true })

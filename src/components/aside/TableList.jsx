@@ -7,6 +7,7 @@ import List from '@/components/common/List'
 import RefreshButton from '../common/RefreshButton'
 import useDebounce from '@/lib/useDebounce'
 import SearchBox from '../common/SearchBox'
+import { useParams } from '@reach/router'
 
 const RELKIND_LABEL = {
   r: '',
@@ -20,6 +21,7 @@ function getTypeLabel({ table_type }) {
 }
 
 export default function TableList() {
+  const { tablename } = useParams()
   const [search, setSearch] = useState('')
   const debouncedSearch = useDebounce(search, 300)
 
@@ -39,13 +41,21 @@ export default function TableList() {
     <RefreshButton loading={isFetching} onClick={refetch} />
   )
 
+  function getTitle(d) {
+    if (d.name === tablename) {
+      return <span className="text-blue-700 font-semibold">{d.name}</span>
+    } else {
+      return d.name
+    }
+  }
+
   return (
     <Collapsible title="Tables / Views" badge={badge} corner={refresh}>
       {data.length ? <SearchBox onChange={setSearch} /> : null}
       <List
         items={filteredData}
         itemSize={64}
-        getTitle="name"
+        getTitle={getTitle}
         getLink={(d) => `/table/${d.name}/${d.id}`}
         getSubtitle={(d) => (
           <>

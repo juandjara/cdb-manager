@@ -1,8 +1,9 @@
+import Button from '@/components/common/Button'
 import Select from '@/components/common/Select'
 import Table from '@/components/Table'
 import { DETAIL_QUERIES } from '@/lib/tableDetailsQueries'
 import useSQL from '@/lib/useSQL'
-import { useParams } from '@reach/router'
+import { useParams, Link } from '@reach/router'
 import React, { useState } from 'react'
 
 function makeColumns(data) {
@@ -47,6 +48,15 @@ export default function TableDetails() {
           onChange={setQuery}
         />
       </header>
+      <Link to={`/console?q=select * from ${tablename}`}>
+        <Button
+          padding="px-3 py-1"
+          backgroundColor="bg-blue-50 hover:bg-blue-100"
+          className="mb-8 -ml-1"
+        >
+          Query this table
+        </Button>
+      </Link>
       <Table columns={columns} data={data} isLoading={isLoading} />
     </div>
   )
