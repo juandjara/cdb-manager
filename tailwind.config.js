@@ -14,6 +14,7 @@ module.exports = {
           `bg-${color}-50`
         ])
         .flat()
+        .concat(['text-left', 'text-right'])
     }
   },
   variants: {
