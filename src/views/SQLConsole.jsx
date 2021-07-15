@@ -45,7 +45,7 @@ export default function SQLConsole() {
         column.align = 'right'
       }
       if (type === 'geometry') {
-        column.render = () => `Geometry`
+        column.render = (value) => (value ? 'Geometry' : '')
       }
 
       return column
@@ -117,11 +117,7 @@ export default function SQLConsole() {
                 </Button>
               </div>
             </Panel>
-            <Table
-              columns={columns}
-              data={mutation.data.rows}
-              isLoading={mutation.isLoading}
-            />
+            <Table columns={columns} data={mutation.data.rows} />
           </>
         )}
       </div>

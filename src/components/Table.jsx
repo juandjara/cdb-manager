@@ -35,7 +35,7 @@ function processPage({ data, page, rpp }) {
   }
 }
 
-export default function Table({ columns = [], data, isLoading }) {
+export default function Table({ columns = [], data }) {
   const [page, setPage] = useState(0)
   const [rpp, setRpp] = useState(RPP_OPTIONS[0])
   const { firstIndex, lastIndex, lastPage, dataPage } = processPage({
