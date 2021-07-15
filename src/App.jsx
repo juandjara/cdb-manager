@@ -2,7 +2,7 @@ import React from 'react'
 import { QueryClientProvider, QueryClient } from 'react-query'
 import { AccountsProvider } from '@/lib/AccountsContext.jsx'
 import { AlertProvider } from '@/lib/AlertContext.jsx'
-import Layout from '@/components/Layout'
+import Routes from '@/components/Routes'
 
 const apiClient = new QueryClient({
   defaultOptions: {
@@ -17,7 +17,7 @@ export default function App() {
     <AccountsProvider>
       <QueryClientProvider client={apiClient}>
         <AlertProvider>
-          <Layout />
+          <Routes />
         </AlertProvider>
       </QueryClientProvider>
     </AccountsProvider>

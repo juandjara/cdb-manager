@@ -69,7 +69,11 @@ function GridLayout({ path, route: Route }) {
         <h1 className="text-2xl font-medium">CDB Manager</h1>
       </header>
       <Aside />
-      <main>{<Route path={path} />}</main>
+      <main>
+        <Suspense fallback={<Loader />}>
+          <Route path={path} />
+        </Suspense>
+      </main>
       <footer className="text-sm py-4 px-4 border-t border-gray-200 bg-gray-50">
         <span>Caught any bug? Want to improve the website? </span>
         <a
