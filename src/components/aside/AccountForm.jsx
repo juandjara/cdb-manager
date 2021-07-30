@@ -1,6 +1,9 @@
 import React, { useState } from 'react'
 import Button from '@/components/common/Button'
 import Input from '@/components/common/Input'
+import executeSQL from '@/lib/executeSQL'
+import { useAlertSetter } from '@/lib/AlertContext'
+import extractErrorMessage from '@/lib/extractErrorMessage'
 
 export default function AccountForm({
   config,
@@ -17,13 +20,36 @@ export default function AccountForm({
     apikey: (config && config.apikey) || '',
     urlTemplate: (config && config.urlTemplate) || ''
   }))
+  const [loading, setLoading] = useState(false)
+  const setAlert = useAlertSetter()
 
   const update = (key) => (ev) =>
     setForm((form) => ({ ...form, [key]: ev.target.value }))
 
-  function handleSubmit(ev) {
+  async function handleSubmit(ev) {
     ev.preventDefault()
-    onSave(form)
+    setLoading(true)
+    try {
+      await validateAccount()
+      setLoading(false)
+      onSave(form)
+    } catch (err) {
+      // eslint-disable-next-line
+      console.error('[AccountForm.jsx] Error validating account', err)
+      setLoading(false)
+      setAlert(`Invalid credentials: ${extractErrorMessage(err)}`)
+    }
+  }
+
+  async function validateAccount() {
+    return executeSQL({
+      query: 'SELECT 1',
+      credentials: {
+        username: form.username,
+        apikey: form.apikey,
+        urlTemplate: form.urlTemplate
+      }
+    })
   }
 
   return (
@@ -66,7 +92,7 @@ export default function AccountForm({
         <Button type="button" onClick={onClose} color="gray">
           Cancel
         </Button>
-        <Button type="submit" color="blue">
+        <Button disabled={loading} type="submit" color="blue">
           Save
         </Button>
       </div>
