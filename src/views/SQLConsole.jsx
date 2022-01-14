@@ -9,6 +9,7 @@ import executeSQL from '@/lib/executeSQL'
 import { useSelectedAccount } from '@/lib/AccountsContext'
 import { useAlertSetter } from '@/lib/AlertContext'
 import downloadBlob from '@/lib/downloadBlob'
+import { API_VERSIONS } from '@/components/aside/AccountForm'
 
 const MapOverlay = lazy(() => import('@/components/MapOverlay'))
 
@@ -22,20 +23,10 @@ function Panel({ children, color }) {
   )
 }
 
-export default function SQLConsole() {
-  const credentials = useSelectedAccount()
-  const [query, setQuery] = useState(() => {
-    const urlQuery = new URLSearchParams(window.location.search)
-    return urlQuery.get('q') || ''
-  })
-  const [showMap, setShowMap] = useState(false)
-  const setAlert = useAlertSetter()
-  const mutation = useSQLMutation({ supressErrorAlert: true })
-
-  const columns =
-    mutation.isSuccess &&
-    Object.keys(mutation.data.fields).map((field) => {
-      const type = mutation.data.fields[field].type
+function extractColumns(data, apiVersion) {
+  if (apiVersion === API_VERSIONS.V2) {
+    return Object.keys(data.fields).map((field) => {
+      const type = data.fields[field].type
       const column = {
         title: field,
         key: field
@@ -50,6 +41,38 @@ export default function SQLConsole() {
 
       return column
     })
+  }
+  if (apiVersion === API_VERSIONS.V3) {
+    return data.schema.map((field) => {
+      const column = {
+        title: field.name,
+        key: field.name
+      }
+
+      if (field.type === 'number') {
+        column.align = 'right'
+      }
+      if (field.type === 'geometry') {
+        column.render = (value) => (value ? 'Geometry' : '')
+      }
+
+      return column
+    })
+  }
+}
+
+export default function SQLConsole() {
+  const credentials = useSelectedAccount()
+  const [query, setQuery] = useState(() => {
+    const urlQuery = new URLSearchParams(window.location.search)
+    return urlQuery.get('q') || ''
+  })
+  const [showMap, setShowMap] = useState(false)
+  const setAlert = useAlertSetter()
+  const mutation = useSQLMutation({ supressErrorAlert: true })
+
+  const columns =
+    mutation.isSuccess && extractColumns(mutation.data, credentials.apiVersion)
 
   async function downloadCSV() {
     try {

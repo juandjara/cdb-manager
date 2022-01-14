@@ -1,3 +1,4 @@
+import { API_VERSIONS } from '@/components/aside/AccountForm'
 import React, {
   createContext,
   useContext,
@@ -61,7 +62,13 @@ export function useAccounts() {
 
 export function useSelectedAccount() {
   const accounts = useAccounts()
-  return useMemo(() => accounts.find((a) => a.selected), [accounts])
+  return useMemo(() => {
+    const account = accounts.find((a) => a.selected)
+    if (account && !account.apiVersion) {
+      account.apiVersion = API_VERSIONS.V2
+    }
+    return account
+  }, [accounts])
 }
 
 export function useAccountsActions() {

@@ -9,12 +9,13 @@ export default function Select({
   onChange,
   placeholder,
   valueKey = 'value',
-  className = ''
+  className = '',
+  id
 }) {
   return (
     <Listbox value={selected} onChange={onChange}>
       {({ open }) => (
-        <div className={`relative ${className}`}>
+        <div id={id} className={`relative ${className}`}>
           <Listbox.Button
             className={`relative h-9 w-full py-2 pl-3 pr-10 text-left bg-white rounded-lg shadow-md cursor-default sm:text-sm ${buttonFocusStyle}`}
           >

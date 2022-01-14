@@ -2,6 +2,7 @@
   "name": "cdb-manager",
   "version": "0.0.0",
   "scripts": {
+    "start": "npm run dev",
     "dev": "vite",
     "build": "vite build",
     "serve": "vite preview",

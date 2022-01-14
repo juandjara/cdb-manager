@@ -5,10 +5,14 @@ import AccountConfig from './AccountConfig'
 import FunctionList from './FunctionList'
 import SequenceList from './SequenceList'
 import TableList from './TableList'
+import { useSelectedAccount } from '@/lib/AccountsContext'
+import { API_VERSIONS } from './AccountForm'
 
 export default function Aside() {
   const { pathname } = useLocation()
   const linkColor = pathname === '/console' ? 'bg-blue-50' : 'hover:bg-blue-50'
+  const credentials = useSelectedAccount()
+  const hasMetadata = credentials && credentials.apiVersion === API_VERSIONS.V2
 
   return (
     <aside className="w-96 border-r border-gray-200">
@@ -20,9 +24,13 @@ export default function Aside() {
         >
           SQL Console
         </Link>
-        <TableList />
-        <FunctionList />
-        <SequenceList />
+        {hasMetadata && (
+          <div>
+            <TableList />
+            <FunctionList />
+            <SequenceList />
+          </div>
+        )}
       </nav>
     </aside>
   )
