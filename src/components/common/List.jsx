@@ -34,6 +34,7 @@ function ItemList({
   )
 }
 
+// eslint-disable-next-line react/display-name
 const curryListItem = (listProps) => (rowProps) =>
   <ItemList {...listProps} {...rowProps} />
 

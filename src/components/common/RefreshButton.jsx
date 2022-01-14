@@ -26,6 +26,12 @@ export default function RefreshButton({
       title="Refresh list"
       className={`${className} p-2 rounded-md`}
       onClick={handleClick}
+      tabIndex={-1}
+      onKeyDown={(ev) => {
+        if (ev.key === 'Enter') {
+          handleClick(ev)
+        }
+      }}
       {...props}
     >
       <RefreshIcon className={iconStyle} />
