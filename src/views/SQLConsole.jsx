@@ -43,6 +43,12 @@ function extractColumns(data, apiVersion) {
     })
   }
   if (apiVersion === API_VERSIONS.V3) {
+    if (data.schema.length === 0) {
+      if (data.rows.length) {
+        const keys = Object.keys(data.rows[0])
+        return keys.map((k) => ({ title: k, key: k }))
+      }
+    }
     return data.schema.map((field) => {
       const column = {
         title: field.name,
