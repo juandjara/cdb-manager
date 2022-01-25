@@ -73,11 +73,7 @@ export default function AccountForm({
   async function validateAccount() {
     return executeSQL({
       query: 'SELECT 1',
-      credentials: {
-        username: form.username,
-        apikey: form.apikey,
-        urlTemplate: form.urlTemplate
-      }
+      credentials: form
     })
   }
 
