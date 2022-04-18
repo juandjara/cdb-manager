@@ -43,6 +43,7 @@ function ImportButton({ onUpload }) {
         ref={inputRef}
       />
       <Button
+        title="Import a JSON file with saved accounts"
         onClick={toggleFile}
         padding="px-3 py-1"
         textColor="text-indigo-700"
@@ -119,6 +120,7 @@ export default function AccountConfig() {
         </label>
         <span className="flex-auto"></span>
         <Button
+          title="Create new account"
           onClick={openNew}
           padding="px-3 py-1"
           backgroundColor="hover:bg-gray-100"
@@ -127,6 +129,7 @@ export default function AccountConfig() {
           New
         </Button>
         <Button
+          title="Edit selected account"
           onClick={openSelected}
           padding="px-3 py-1"
           backgroundColor="hover:bg-blue-100"
@@ -135,6 +138,7 @@ export default function AccountConfig() {
         </Button>
         <ImportButton onUpload={importAccounts} />
         <Button
+          title="Export all saved accounts as JSON"
           onClick={exportAccounts}
           padding="px-3 py-1"
           textColor="text-indigo-700"
