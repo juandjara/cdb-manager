@@ -17,7 +17,7 @@ export default function Select({
       {({ open }) => (
         <div id={id} className={`relative ${className}`}>
           <Listbox.Button
-            className={`relative h-9 w-full py-2 pl-3 pr-10 text-left bg-white rounded-lg shadow-md cursor-default sm:text-sm ${buttonFocusStyle}`}
+            className={`relative h-9 w-full py-2 pl-3 pr-10 text-left bg-white rounded-lg border border-black border-opacity-10 shadow-md cursor-default sm:text-sm ${buttonFocusStyle}`}
           >
             {selected ? (
               <span className="block truncate">{selected.label}</span>

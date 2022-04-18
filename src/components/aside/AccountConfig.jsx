@@ -1,3 +1,4 @@
+import { useRef } from 'react'
 import { useAccounts, useAccountsActions } from '@/lib/AccountsContext'
 import { Transition } from '@headlessui/react'
 import React, { useState } from 'react'
@@ -6,12 +7,59 @@ import Button from '@/components/common/Button'
 import Select from '@/components/common/Select'
 import { ACCOUNT_ACTIONS } from '@/lib/AccountsContext'
 import { nanoid } from 'nanoid'
+import downloadBlob from '@/lib/downloadBlob'
+import { ACCOUNTS_KEY } from '@/lib/AccountsContext'
+import { useAlertSetter } from '@/lib/AlertContext'
+
+function ImportButton({ onUpload }) {
+  const inputRef = useRef()
+
+  function toggleFile() {
+    window.confirm(
+      'Esto sobreescribira todas tus cuentas guardadas. ¿Estás seguro?'
+    )
+    if (inputRef.current) {
+      inputRef.current.click()
+    }
+  }
+
+  function handleFile(ev) {
+    const file = ev.target.files[0]
+    const reader = new FileReader()
+    reader.onload = function handleImgLoad(ev) {
+      const text = ev.target.result
+      onUpload(text)
+    }
+    reader.readAsText(file)
+  }
+
+  return (
+    <div>
+      <input
+        id="profile_picture"
+        className="hidden"
+        type="file"
+        onChange={handleFile}
+        ref={inputRef}
+      />
+      <Button
+        onClick={toggleFile}
+        padding="px-3 py-1"
+        textColor="text-indigo-700"
+        backgroundColor="hover:bg-indigo-100"
+      >
+        Import
+      </Button>
+    </div>
+  )
+}
 
 export default function AccountConfig() {
   const [formOpen, setFormOpen] = useState(false)
   const accounts = useAccounts()
   const configActions = useAccountsActions()
   const selectedAccount = accounts.find((a) => a.selected)
+  const setAlert = useAlertSetter()
 
   function setSelectedAccount(account) {
     configActions[ACCOUNT_ACTIONS.SELECT](account && account.id)
@@ -44,6 +92,22 @@ export default function AccountConfig() {
     setSelectedAccount(newConfig)
   }
 
+  function importAccounts(jsonText) {
+    try {
+      const importData = JSON.parse(jsonText)
+      configActions[ACCOUNT_ACTIONS.IMPORT](importData)
+    } catch (err) {
+      setAlert('Error parsing JSON. Invalid file')
+      // eslint-disable-next-line
+      console.error(err)
+    }
+  }
+
+  function exportAccounts() {
+    const accountsText = localStorage.getItem(ACCOUNTS_KEY) || '[]'
+    downloadBlob(accountsText, 'application/json', 'cdb-manager-accounts.json')
+  }
+
   return (
     <div className="px-4 py-6">
       <div className="flex items-baseline justify-between space-x-1">
@@ -51,7 +115,7 @@ export default function AccountConfig() {
           htmlFor="config_select"
           className="block text-sm font-medium text-gray-700"
         >
-          Account
+          Accounts
         </label>
         <span className="flex-auto"></span>
         <Button
@@ -68,6 +132,15 @@ export default function AccountConfig() {
           backgroundColor="hover:bg-blue-100"
         >
           Edit
+        </Button>
+        <ImportButton onUpload={importAccounts} />
+        <Button
+          onClick={exportAccounts}
+          padding="px-3 py-1"
+          textColor="text-indigo-700"
+          backgroundColor="hover:bg-indigo-100"
+        >
+          Export
         </Button>
       </div>
       <Select

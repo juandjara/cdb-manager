@@ -16,7 +16,8 @@ export const ACCOUNT_ACTIONS = {
   CREATE: 'create',
   UPDATE: 'update',
   DELETE: 'delete',
-  SELECT: 'select'
+  SELECT: 'select',
+  IMPORT: 'import'
 }
 
 function reducer(state, action) {
@@ -35,6 +36,8 @@ function reducer(state, action) {
         const selected = opt.id === payload
         return { ...opt, selected }
       })
+    case ACCOUNT_ACTIONS.IMPORT:
+      return payload
     default:
       return state
   }
