@@ -95,7 +95,7 @@ export default function SQLConsole() {
   const credentials = useSelectedAccount()
   const [query, setQuery] = useCurrentQuery()
   const [showMap, setShowMap] = useState(false)
-  const [queryListOpen, setQueryListOpen] = useState(true)
+  const [queryListOpen, setQueryListOpen] = useState(false)
   const setAlert = useAlertSetter()
   const mutation = useSQLMutation({ supressErrorAlert: true })
 
@@ -146,7 +146,7 @@ export default function SQLConsole() {
           onBlur={() => saveCurrentQuery(query)}
           style={{ minHeight: 'inherit' }}
         />
-        <Button
+        {/* <Button
           onClick={() => setQueryListOpen(true)}
           title="Histórico de queries"
           padding="p-2"
@@ -154,7 +154,7 @@ export default function SQLConsole() {
           className="rounded-sm m-2 absolute top-0 right-0 z-20"
         >
           <ClockIcon className="w-6 h-6" />
-        </Button>
+        </Button> */}
       </div>
       <div className="mt-4 space-x-4">
         <Button
