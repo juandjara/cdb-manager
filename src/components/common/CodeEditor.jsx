@@ -24,6 +24,7 @@ export default function CodeEditor({
   style,
   value = '',
   onChange = noop,
+  onBlur = noop,
   ...props
 }) {
   return (
@@ -32,6 +33,7 @@ export default function CodeEditor({
       {...props}
     >
       <Editor
+        onBlur={onBlur}
         value={value}
         onValueChange={onChange}
         highlight={(code) => (

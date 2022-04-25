@@ -10,7 +10,7 @@ import React, {
 export const ACCOUNTS_KEY = 'CDB_Manager_Accounts'
 const initialState = JSON.parse(localStorage.getItem(ACCOUNTS_KEY) || '[]')
 const AccountContext = createContext(initialState)
-const DispatchContext = createContext()
+const AccountDispatchContext = createContext()
 
 export const ACCOUNT_ACTIONS = {
   CREATE: 'create',
@@ -52,9 +52,9 @@ export function AccountsProvider({ children }) {
 
   return (
     <AccountContext.Provider value={state}>
-      <DispatchContext.Provider value={dispatch}>
+      <AccountDispatchContext.Provider value={dispatch}>
         {children}
-      </DispatchContext.Provider>
+      </AccountDispatchContext.Provider>
     </AccountContext.Provider>
   )
 }
@@ -75,7 +75,7 @@ export function useSelectedAccount() {
 }
 
 export function useAccountsActions() {
-  const dispatch = useContext(DispatchContext)
+  const dispatch = useContext(AccountDispatchContext)
   const actions = {}
   for (const actionKey of Object.values(ACCOUNT_ACTIONS)) {
     actions[actionKey] = (payload) => dispatch({ type: actionKey, payload })

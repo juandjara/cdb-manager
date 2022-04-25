@@ -13,7 +13,12 @@ export default function useSQLMutation(config = {}) {
 
   const mutation = useMutation(
     (query) => executeSQL({ credentials, cancelToken, query }),
-    config
+    {
+      ...config,
+      onSuccess: () => {
+        // TODO: save the query in the history
+      }
+    }
   )
 
   useEffect(() => {

@@ -7,7 +7,7 @@ export default function SearchBox({
   ...props
 }) {
   return (
-    <div className="flex items-center space-x-2 rounded-md shadow-sm my-2 p-2">
+    <div className="flex items-center space-x-2 rounded-md mt-2 p-2">
       <SearchIcon className="h-5 w-5" />
       <input
         onChange={(ev) => onChange(ev.target.value)}

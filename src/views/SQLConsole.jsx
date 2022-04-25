@@ -10,6 +10,7 @@ import { useSelectedAccount } from '@/lib/AccountsContext'
 import { useAlertSetter } from '@/lib/AlertContext'
 import downloadBlob from '@/lib/downloadBlob'
 import { API_VERSIONS } from '@/components/aside/AccountForm'
+import QueryListPanel from '@/components/QueryListPanel'
 
 const MapOverlay = lazy(() => import('@/components/MapOverlay'))
 
@@ -67,13 +68,34 @@ function extractColumns(data, apiVersion) {
   }
 }
 
+const CURRENT_QUERY_KEY = 'CDB_Manager_Current_Query'
+
+function useCurrentQuery() {
+  return useState(() => {
+    const urlParams = new URLSearchParams(window.location.search)
+    const urlQuery = urlParams.get('q')
+    const savedQuery = localStorage.getItem(CURRENT_QUERY_KEY)
+
+    if (urlQuery) {
+      return urlQuery
+    }
+    if (savedQuery) {
+      return savedQuery
+    }
+
+    return ''
+  })
+}
+
+function saveCurrentQuery(query) {
+  localStorage.setItem(CURRENT_QUERY_KEY, query)
+}
+
 export default function SQLConsole() {
   const credentials = useSelectedAccount()
-  const [query, setQuery] = useState(() => {
-    const urlQuery = new URLSearchParams(window.location.search)
-    return urlQuery.get('q') || ''
-  })
+  const [query, setQuery] = useCurrentQuery()
   const [showMap, setShowMap] = useState(false)
+  const [queryListOpen, setQueryListOpen] = useState(true)
   const setAlert = useAlertSetter()
   const mutation = useSQLMutation({ supressErrorAlert: true })
 
@@ -97,6 +119,16 @@ export default function SQLConsole() {
 
   return (
     <div className="relative h-full p-6">
+      <Suspense fallback="Loading query list panel">
+        {queryListOpen ? (
+          <QueryListPanel
+            onClose={() => setQueryListOpen(false)}
+            query={query}
+          />
+        ) : (
+          <div></div>
+        )}
+      </Suspense>
       <Suspense fallback={<p></p>}>
         {showMap ? (
           <MapOverlay onClose={() => setShowMap(false)} query={query} />
@@ -106,13 +138,23 @@ export default function SQLConsole() {
       </Suspense>
       <div
         style={{ minHeight: '348px', maxHeight: 'calc(100vh - 254px)' }}
-        className="overflow-auto border-2 border-gray-300 rounded-lg"
+        className="relative overflow-auto border-2 border-gray-300 rounded-lg"
       >
         <CodeEditor
           value={query}
           onChange={setQuery}
+          onBlur={() => saveCurrentQuery(query)}
           style={{ minHeight: 'inherit' }}
         />
+        <Button
+          onClick={() => setQueryListOpen(true)}
+          title="Histórico de queries"
+          padding="p-2"
+          color="blue"
+          className="rounded-sm m-2 absolute top-0 right-0 z-20"
+        >
+          <ClockIcon className="w-6 h-6" />
+        </Button>
       </div>
       <div className="mt-4 space-x-4">
         <Button
