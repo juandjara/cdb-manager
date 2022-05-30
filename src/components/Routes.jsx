@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import Aside from '@/components/aside/Aside'
 import { Router } from '@reach/router'
 import Spinner from '@/components/common/Spinner'
+import { Redirect } from '@reach/router'
 
 function Loader() {
   return (
@@ -51,17 +52,6 @@ const Grid = styled.div`
   }
 `
 
-function Hello() {
-  return (
-    <div className="p-4 space-y-2">
-      <span role="img" aria-label="Hello!" title="Hello!" className="text-4xl">
-        👋
-      </span>
-      <p>Hello !</p>
-    </div>
-  )
-}
-
 function GridLayout({ path, route: Route }) {
   return (
     <Grid>
@@ -92,7 +82,7 @@ export default function Layout() {
   return (
     <Suspense fallback={<Loader />}>
       <Router>
-        <GridLayout path="/" route={Hello} />
+        <GridLayout path="/" route={() => <Redirect to="/console" />} />
         <GridLayout path="/console" route={SQLConsole} />
         <GridLayout path="/fn/:fnName" route={FunctionDetails} />
         <GridLayout path="/seq/:seqName" route={SequenceDetails} />
