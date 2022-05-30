@@ -1,4 +1,4 @@
-import React, { lazy, Suspense, useState } from 'react'
+import React, { lazy, Suspense, useState, useMemo, useEffect } from 'react'
 import CodeEditor from '@/components/common/CodeEditor'
 import Button from '@/components/common/Button'
 import useSQLMutation from '@/lib/useSQLMutation'
@@ -6,7 +6,11 @@ import Table from '@/components/Table'
 import extractErrorMessage from '@/lib/extractErrorMessage'
 import { ClockIcon, TableIcon } from '@heroicons/react/outline'
 import executeSQL from '@/lib/executeSQL'
-import { useSelectedAccount } from '@/lib/AccountsContext'
+import {
+  ACCOUNT_ACTIONS,
+  useAccountsActions,
+  useSelectedAccount
+} from '@/lib/AccountsContext'
 import { useAlertSetter } from '@/lib/AlertContext'
 import downloadBlob from '@/lib/downloadBlob'
 import { API_VERSIONS } from '@/components/aside/AccountForm'
@@ -24,7 +28,15 @@ function Panel({ children, color }) {
   )
 }
 
-function extractColumns(data, apiVersion) {
+function extractColumnsFromRows(rows) {
+  if (rows.length) {
+    const keys = Object.keys(rows[0])
+    return keys.map((k) => ({ title: k, key: k }))
+  }
+  return []
+}
+
+function extractColumnsFromMetadata(data, apiVersion) {
   if (apiVersion === API_VERSIONS.V2) {
     return Object.keys(data.fields).map((field) => {
       const type = data.fields[field].type
@@ -44,11 +56,8 @@ function extractColumns(data, apiVersion) {
     })
   }
   if (apiVersion === API_VERSIONS.V3) {
-    if (data.schema.length === 0) {
-      if (data.rows.length) {
-        const keys = Object.keys(data.rows[0])
-        return keys.map((k) => ({ title: k, key: k }))
-      }
+    if (!data.schema || data.schema.length === 0) {
+      return extractColumnsFromRows(data.rows)
     }
     return data.schema.map((field) => {
       const column = {
@@ -68,13 +77,20 @@ function extractColumns(data, apiVersion) {
   }
 }
 
-const CURRENT_QUERY_KEY = 'CDB_Manager_Current_Query'
+function extractColumns(data, apiVersion) {
+  try {
+    return extractColumnsFromMetadata(data, apiVersion)
+  } catch (err) {
+    return extractColumnsFromRows(data.rows)
+  }
+}
 
 function useCurrentQuery() {
-  return useState(() => {
+  const account = useSelectedAccount()
+  return useMemo(() => {
     const urlParams = new URLSearchParams(window.location.search)
     const urlQuery = urlParams.get('q')
-    const savedQuery = localStorage.getItem(CURRENT_QUERY_KEY)
+    const savedQuery = account.currentQuery
 
     if (urlQuery) {
       return urlQuery
@@ -84,20 +100,18 @@ function useCurrentQuery() {
     }
 
     return ''
-  })
-}
-
-function saveCurrentQuery(query) {
-  localStorage.setItem(CURRENT_QUERY_KEY, query)
+  }, [account])
 }
 
 export default function SQLConsole() {
   const credentials = useSelectedAccount()
-  const [query, setQuery] = useCurrentQuery()
+  const query = useCurrentQuery()
   const [showMap, setShowMap] = useState(false)
   const [queryListOpen, setQueryListOpen] = useState(false)
   const setAlert = useAlertSetter()
   const mutation = useSQLMutation({ supressErrorAlert: true })
+  const account = useSelectedAccount()
+  const actions = useAccountsActions()
 
   const columns =
     mutation.isSuccess && extractColumns(mutation.data, credentials.apiVersion)
@@ -117,6 +131,14 @@ export default function SQLConsole() {
     }
   }
 
+  function setQuery(query) {
+    actions[ACCOUNT_ACTIONS.UPDATE]({ id: account.id, currentQuery: query })
+  }
+
+  useEffect(() => {
+    mutation.reset()
+  }, [credentials?.id])
+
   return (
     <div className="relative h-full p-6">
       <Suspense fallback="Loading query list panel">
@@ -124,6 +146,7 @@ export default function SQLConsole() {
           <QueryListPanel
             onClose={() => setQueryListOpen(false)}
             query={query}
+            setQuery={setQuery}
           />
         ) : (
           <div></div>
@@ -143,10 +166,9 @@ export default function SQLConsole() {
         <CodeEditor
           value={query}
           onChange={setQuery}
-          onBlur={() => saveCurrentQuery(query)}
           style={{ minHeight: 'inherit' }}
         />
-        {/* <Button
+        <Button
           onClick={() => setQueryListOpen(true)}
           title="Histórico de queries"
           padding="p-2"
@@ -154,7 +176,7 @@ export default function SQLConsole() {
           className="rounded-sm m-2 absolute top-0 right-0 z-20"
         >
           <ClockIcon className="w-6 h-6" />
-        </Button> */}
+        </Button>
       </div>
       <div className="mt-4 space-x-4">
         <Button

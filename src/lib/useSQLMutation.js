@@ -5,21 +5,22 @@ import { useSelectedAccount } from './AccountsContext'
 import { useAlertSetter } from './AlertContext'
 import executeSQL from './executeSQL'
 import extractErrorMessage from './extractErrorMessage'
+import {
+  QUERY_HISTORY_ACTIONS,
+  useQueryHistoryActions
+} from './AccountsContext'
 
 export default function useSQLMutation(config = {}) {
   const { token: cancelToken } = axios.CancelToken.source()
   const credentials = useSelectedAccount()
   const setAlert = useAlertSetter()
+  const actions = useQueryHistoryActions()
 
-  const mutation = useMutation(
-    (query) => executeSQL({ credentials, cancelToken, query }),
-    {
-      ...config,
-      onSuccess: () => {
-        // TODO: save the query in the history
-      }
-    }
-  )
+  const mutation = useMutation(async (query) => {
+    const result = await executeSQL({ credentials, cancelToken, query })
+    actions[QUERY_HISTORY_ACTIONS.CREATE](query)
+    return result
+  }, config)
 
   useEffect(() => {
     if (mutation.isError && !config.supressErrorAlert) {

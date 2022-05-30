@@ -7,17 +7,27 @@ export default function Input({
   onChange,
   corner,
   type = 'text',
-  placeholder
+  placeholder,
+  ...props
 }) {
   return (
-    <div>
-      <div className="flex items-baseline justify-between">
-        <label htmlFor={id} className="block text-sm font-medium text-gray-700">
-          {label}
-        </label>
-        {corner}
-      </div>
-      <div className="mt-1 relative rounded-md shadow-sm">
+    <div {...props}>
+      {label || corner ? (
+        <div className="flex items-baseline justify-between">
+          <label
+            htmlFor={id}
+            className="block text-sm font-medium text-gray-700"
+          >
+            {label}
+          </label>
+          {corner}
+        </div>
+      ) : null}
+      <div
+        className={`relative rounded-md shadow-sm`.concat(
+          label || corner ? ' mt-1' : ''
+        )}
+      >
         <input
           type={type}
           name={id}

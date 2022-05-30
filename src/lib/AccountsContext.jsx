@@ -13,15 +13,74 @@ const AccountContext = createContext(initialState)
 const AccountDispatchContext = createContext()
 
 export const ACCOUNT_ACTIONS = {
-  CREATE: 'create',
-  UPDATE: 'update',
-  DELETE: 'delete',
-  SELECT: 'select',
-  IMPORT: 'import'
+  CREATE: 'account_create',
+  UPDATE: 'account_update',
+  DELETE: 'account_delete',
+  SELECT: 'account_select',
+  IMPORT: 'account_import'
 }
 
-function reducer(state, action) {
+export const QUERY_HISTORY_ACTIONS = {
+  CREATE: 'query_create',
+  UPDATE: 'query_update',
+  DELETE: 'query_delete'
+}
+
+/*
+type QueryHistoryEntry = {
+  query: string
+  name: string
+  updated_at: Date
+  pinned: boolean
+}
+*/
+
+function queryHistoryReducer(state, action) {
   const { type, payload } = action
+  switch (type) {
+    case QUERY_HISTORY_ACTIONS.CREATE: {
+      const newQuery = payload
+      const hasQuery = state.some((e) => e.query === newQuery)
+
+      let newState
+      if (hasQuery) {
+        newState = state.map((e) =>
+          e.query === newQuery ? { ...e, updated_at: Date.now() } : e
+        )
+      } else {
+        newState = state.concat({
+          name: `Query ${state.length + 1}`,
+          query: payload,
+          updated_at: Date.now(),
+          pinned: false
+        })
+      }
+
+      return newState
+    }
+    case QUERY_HISTORY_ACTIONS.UPDATE:
+      return state.map((opt) =>
+        opt.query === payload.query ? { ...opt, ...payload } : opt
+      )
+    case QUERY_HISTORY_ACTIONS.DELETE:
+      return state.filter((opt) => opt.query !== payload)
+    default:
+      return state
+  }
+}
+
+function accountsReducer(state, action) {
+  const { type, payload } = action
+  if (type.substring(0, 6) === 'query_') {
+    const account = getSelectedAccount(state)
+    if (account) {
+      const queries = queryHistoryReducer(account.queries || [], action)
+      return state.map((opt) =>
+        opt.id === account.id ? { ...opt, queries } : opt
+      )
+    }
+  }
+
   switch (type) {
     case ACCOUNT_ACTIONS.CREATE:
       return state.concat(payload)
@@ -44,7 +103,7 @@ function reducer(state, action) {
 }
 
 export function AccountsProvider({ children }) {
-  const [state, dispatch] = useReducer(reducer, initialState)
+  const [state, dispatch] = useReducer(accountsReducer, initialState)
 
   useEffect(() => {
     localStorage.setItem(ACCOUNTS_KEY, JSON.stringify(state))
@@ -63,21 +122,33 @@ export function useAccounts() {
   return useContext(AccountContext)
 }
 
+function getSelectedAccount(accounts) {
+  const account = accounts.find((a) => a.selected)
+  if (account && !account.apiVersion) {
+    account.apiVersion = API_VERSIONS.V2
+  }
+  return account
+}
+
 export function useSelectedAccount() {
   const accounts = useAccounts()
-  return useMemo(() => {
-    const account = accounts.find((a) => a.selected)
-    if (account && !account.apiVersion) {
-      account.apiVersion = API_VERSIONS.V2
-    }
-    return account
-  }, [accounts])
+  return useMemo(() => getSelectedAccount(accounts), [accounts])
 }
 
 export function useAccountsActions() {
   const dispatch = useContext(AccountDispatchContext)
   const actions = {}
   for (const actionKey of Object.values(ACCOUNT_ACTIONS)) {
+    actions[actionKey] = (payload) => dispatch({ type: actionKey, payload })
+  }
+
+  return actions
+}
+
+export function useQueryHistoryActions() {
+  const dispatch = useContext(AccountDispatchContext)
+  const actions = {}
+  for (const actionKey of Object.values(QUERY_HISTORY_ACTIONS)) {
     actions[actionKey] = (payload) => dispatch({ type: actionKey, payload })
   }
 
