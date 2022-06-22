@@ -90,7 +90,7 @@ function useCurrentQuery() {
   return useMemo(() => {
     const urlParams = new URLSearchParams(window.location.search)
     const urlQuery = urlParams.get('q')
-    const savedQuery = account.currentQuery
+    const savedQuery = account?.currentQuery
 
     if (urlQuery) {
       return urlQuery
