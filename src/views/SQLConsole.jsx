@@ -14,8 +14,8 @@ import {
 import { useAlertSetter } from '@/lib/AlertContext'
 import downloadBlob from '@/lib/downloadBlob'
 import { API_VERSIONS } from '@/components/aside/AccountForm'
-import QueryListPanel from '@/components/QueryListPanel'
 
+const QueryListPanel = lazy(() => import('@/components/QueryListPanel'))
 const MapOverlay = lazy(() => import('@/components/MapOverlay'))
 
 function Panel({ children, color }) {
@@ -138,6 +138,16 @@ export default function SQLConsole() {
   useEffect(() => {
     mutation.reset()
   }, [credentials?.id])
+
+  if (!account) {
+    return (
+      <div className="p-4">
+        <p className="text-xl font-medium text-gray-500">
+          Select an account in the left panel to get started
+        </p>
+      </div>
+    )
+  }
 
   return (
     <div className="relative h-full p-6">

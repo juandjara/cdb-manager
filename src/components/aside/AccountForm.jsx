@@ -25,7 +25,7 @@ export default function AccountForm({
   const [form, setForm] = useState(() => {
     const baseFields = {
       id: config && config.id,
-      apiVersion: (config && config.apiVersion) || API_VERSIONS.V2,
+      apiVersion: (config && config.apiVersion) || API_VERSIONS.V3,
       label: (config && config.label) || ''
     }
     const v2Config = {
