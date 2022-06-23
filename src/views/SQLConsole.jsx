@@ -148,6 +148,11 @@ export default function SQLConsole() {
     )
   }
 
+  const viewMapButtonTitle =
+    account?.apiVersion === API_VERSIONS.V3
+      ? 'View Map is only available for CARTO 2 accounts at this moment'
+      : ''
+
   return (
     <div className="relative h-full p-6">
       <Suspense fallback="">
@@ -189,12 +194,19 @@ export default function SQLConsole() {
       </div>
       <div className="mt-4 space-x-4">
         <Button
-          disabled={mutation.isLoading}
+          disabled={!query || mutation.isLoading}
           onClick={() => mutation.mutate(query)}
         >
           Run Query
         </Button>
-        <Button onClick={() => setShowMap(true)}>View map</Button>
+        <span title={viewMapButtonTitle}>
+          <Button
+            disabled={!query || account?.apiVersion === API_VERSIONS.V3}
+            onClick={() => setShowMap(true)}
+          >
+            View map
+          </Button>
+        </span>
       </div>
 
       <div className="mt-8">
