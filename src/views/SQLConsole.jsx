@@ -151,7 +151,7 @@ export default function SQLConsole() {
 
   return (
     <div className="relative h-full p-6">
-      <Suspense fallback="Loading query list panel">
+      <Suspense fallback="">
         {queryListOpen ? (
           <QueryListPanel
             onClose={() => setQueryListOpen(false)}
@@ -162,7 +162,7 @@ export default function SQLConsole() {
           <div></div>
         )}
       </Suspense>
-      <Suspense fallback={<p></p>}>
+      <Suspense fallback="">
         {showMap ? (
           <MapOverlay onClose={() => setShowMap(false)} query={query} />
         ) : (
@@ -183,7 +183,7 @@ export default function SQLConsole() {
           title="Histórico de queries"
           padding="p-2"
           color="blue"
-          className="rounded-sm m-2 absolute top-0 right-0 z-20"
+          className="rounded-sm m-2 absolute top-0 right-0 z-10"
         >
           <ClockIcon className="w-6 h-6" />
         </Button>
