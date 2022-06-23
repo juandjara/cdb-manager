@@ -148,10 +148,13 @@ export default function SQLConsole() {
     )
   }
 
-  const viewMapButtonTitle =
-    account?.apiVersion === API_VERSIONS.V3
-      ? 'View Map is only available for CARTO 2 accounts at this moment'
+  const isV3 = account?.apiVersion === API_VERSIONS.V3
+
+  function disabledForV3(text = '') {
+    return isV3
+      ? `${text} is only available for CARTO 2 accounts at this moment`
       : ''
+  }
 
   return (
     <div className="relative h-full p-6">
@@ -199,11 +202,8 @@ export default function SQLConsole() {
         >
           Run Query
         </Button>
-        <span title={viewMapButtonTitle}>
-          <Button
-            disabled={!query || account?.apiVersion === API_VERSIONS.V3}
-            onClick={() => setShowMap(true)}
-          >
+        <span title={disabledForV3('View map')}>
+          <Button disabled={!query || isV3} onClick={() => setShowMap(true)}>
             View map
           </Button>
         </span>
@@ -219,14 +219,24 @@ export default function SQLConsole() {
             <Panel color="green">
               <p className="flex items-center space-x-3">
                 <TableIcon className="h-6 w-6 text-green-500" />
-                <span>Total rows: {mutation.data.total_rows}</span>
+                <span>
+                  Total rows:{' '}
+                  {mutation.data.total_rows || mutation.data.rows.length}
+                </span>
               </p>
-              <p className="flex items-center space-x-3">
-                <ClockIcon className="h-6 w-6 text-green-500" />
-                <span>Server time: {mutation.data.time}s</span>
-              </p>
-              <div>
-                <Button className="mt-3" onClick={downloadCSV} color="green">
+              {mutation.data.time && (
+                <p className="flex items-center space-x-3">
+                  <ClockIcon className="h-6 w-6 text-green-500" />
+                  <span>Server time: {mutation.data.time}s</span>
+                </p>
+              )}
+              <div title={disabledForV3('Download CSV')}>
+                <Button
+                  className="mt-3"
+                  disabled={isV3}
+                  onClick={downloadCSV}
+                  color="green"
+                >
                   Download CSV
                 </Button>
               </div>
