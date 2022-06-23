@@ -104,23 +104,22 @@ function useCurrentQuery() {
 }
 
 export default function SQLConsole() {
-  const credentials = useSelectedAccount()
+  const account = useSelectedAccount()
   const query = useCurrentQuery()
   const [showMap, setShowMap] = useState(false)
   const [queryListOpen, setQueryListOpen] = useState(false)
   const setAlert = useAlertSetter()
   const mutation = useSQLMutation({ supressErrorAlert: true })
-  const account = useSelectedAccount()
   const actions = useAccountsActions()
 
   const columns =
-    mutation.isSuccess && extractColumns(mutation.data, credentials.apiVersion)
+    mutation.isSuccess && extractColumns(mutation.data, account.apiVersion)
 
   async function downloadCSV() {
     try {
       const text = await executeSQL({
         query,
-        credentials,
+        credentials: account,
         options: { format: 'csv' }
       })
       downloadBlob(text, 'text/csv', 'carto-query.csv')
@@ -137,7 +136,7 @@ export default function SQLConsole() {
 
   useEffect(() => {
     mutation.reset()
-  }, [credentials?.id])
+  }, [account?.id])
 
   if (!account) {
     return (
