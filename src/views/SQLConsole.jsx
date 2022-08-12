@@ -14,6 +14,7 @@ import {
 import { useAlertSetter } from '@/lib/AlertContext'
 import downloadBlob from '@/lib/downloadBlob'
 import { API_VERSIONS } from '@/components/aside/AccountForm'
+import { useNavigate } from '@reach/router'
 
 const QueryListPanel = lazy(() => import('@/components/QueryListPanel'))
 const MapOverlay = lazy(() => import('@/components/MapOverlay'))
@@ -85,11 +86,16 @@ function extractColumns(data, apiVersion) {
   }
 }
 
+function getURLQuery() {
+  const urlParams = new URLSearchParams(window.location.search)
+  const urlQuery = urlParams.get('q')
+  return urlQuery
+}
+
 function useCurrentQuery() {
   const account = useSelectedAccount()
   return useMemo(() => {
-    const urlParams = new URLSearchParams(window.location.search)
-    const urlQuery = urlParams.get('q')
+    const urlQuery = getURLQuery()
     const savedQuery = account?.currentQuery
 
     if (urlQuery) {
@@ -111,6 +117,7 @@ export default function SQLConsole() {
   const setAlert = useAlertSetter()
   const mutation = useSQLMutation({ supressErrorAlert: true })
   const actions = useAccountsActions()
+  const navigate = useNavigate()
 
   const columns =
     mutation.isSuccess && extractColumns(mutation.data, account.apiVersion)
@@ -131,7 +138,14 @@ export default function SQLConsole() {
   }
 
   function setQuery(query) {
-    actions[ACCOUNT_ACTIONS.UPDATE]({ id: account.id, currentQuery: query })
+    if (getURLQuery()) {
+      navigate('/console')
+      setTimeout(() => {
+        actions[ACCOUNT_ACTIONS.UPDATE]({ id: account.id, currentQuery: query })
+      })
+    } else {
+      actions[ACCOUNT_ACTIONS.UPDATE]({ id: account.id, currentQuery: query })
+    }
   }
 
   useEffect(() => {
