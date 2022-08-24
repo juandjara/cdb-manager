@@ -9,6 +9,10 @@ export default defineConfig({
     // fix for compiling deck.gl with esbuild
     node3: {}
   },
+  server: {
+    port: process.env.PORT || 3000,
+    https: true
+  },
   resolve: {
     alias: [
       // fix for compiling deck.gl with esbuild

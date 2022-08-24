@@ -1,10 +1,13 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import Button from '@/components/common/Button'
 import Input from '@/components/common/Input'
 import executeSQL from '@/lib/executeSQL'
 import { useAlertSetter } from '@/lib/AlertContext'
 import extractErrorMessage from '@/lib/extractErrorMessage'
 import SelectSimple from '../common/SelectSimple'
+import { useAuth0 } from '@auth0/auth0-react'
+import authConfig from '@/lib/authConfig'
+import { useMutation } from 'react-query'
 
 export const API_VERSIONS = {
   V2: 'v2',
@@ -142,12 +145,7 @@ export default function AccountForm({
             onChange={update('connection')}
             placeholder="carto_dw"
           />
-          <Input
-            id="accessToken"
-            label="Access Token"
-            value={form.accessToken}
-            onChange={update('accessToken')}
-          />
+          <AuthInput form={form} update={update} />
         </>
       )}
       <div className="flex justify-end items-center space-x-4">
@@ -165,5 +163,102 @@ export default function AccountForm({
         </Button>
       </div>
     </form>
+  )
+}
+
+function AuthInput({ form, update }) {
+  const setAlert = useAlertSetter()
+  const { getAccessTokenWithPopup } = useAuth0()
+
+  const decodedToken = useMemo(() => {
+    if (!form.accessToken) {
+      return null
+    }
+
+    let info = null
+    try {
+      info = JSON.parse(window.atob(form.accessToken.split('.')[1]))
+    } catch (e) {
+      // pass
+    }
+
+    const now = new Date().getTime() + 1000 // 1s margin
+    const expireMS = info?.exp * 1000
+    const isValid = expireMS > now
+
+    return (
+      info &&
+      isValid && {
+        id: info['http://app.carto.com/account_id'],
+        email: info['http://app.carto.com/email'],
+        permissions: info.permissions,
+        expireMS
+      }
+    )
+  }, [form.accessToken])
+
+  const mutation = useMutation(
+    async () => {
+      const token = await getAccessTokenWithPopup({
+        scope: authConfig.scopes.join(' ')
+      })
+      setToken(token)
+    },
+    {
+      onError: (err) => {
+        setAlert(`Error loggin in ${err}`)
+        // eslint-disable-next-line
+        console.error(err)
+      }
+    }
+  )
+
+  function handleLogin() {
+    mutation.mutate()
+  }
+
+  function setToken(token) {
+    const ev = { target: { value: token } }
+    update('accessToken')(ev)
+  }
+
+  function logout() {
+    setToken('')
+  }
+
+  const isAuthenticated = !!decodedToken
+
+  const corner = (
+    <div className="text-right" key={isAuthenticated}>
+      {isAuthenticated && (
+        <Button
+          type="button"
+          padding="px-2 py-1"
+          backgroundColor="bg-transparent"
+          onClick={logout}
+        >
+          Logout
+        </Button>
+      )}
+      <Button
+        type="button"
+        padding="px-2 py-1"
+        backgroundColor="bg-transparent"
+        onClick={handleLogin}
+      >
+        {isAuthenticated ? 'Refresh token' : 'Log in'}
+      </Button>
+    </div>
+  )
+
+  return (
+    <Input
+      id="accessToken"
+      label="Access Token"
+      disabled={isAuthenticated}
+      value={form.accessToken || ''}
+      onChange={update('accessToken')}
+      corner={corner}
+    />
   )
 }
