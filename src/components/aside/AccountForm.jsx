@@ -168,7 +168,7 @@ export default function AccountForm({
 
 function AuthInput({ form, update }) {
   const setAlert = useAlertSetter()
-  const { getAccessTokenWithPopup } = useAuth0()
+  const { getAccessTokenWithPopup, logout: _logout } = useAuth0()
 
   const decodedToken = useMemo(() => {
     if (!form.accessToken) {
@@ -224,6 +224,9 @@ function AuthInput({ form, update }) {
 
   function logout() {
     setToken('')
+    _logout({
+      returnTo: window.location.origin
+    })
   }
 
   const isAuthenticated = !!decodedToken
