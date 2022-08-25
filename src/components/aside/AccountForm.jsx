@@ -104,6 +104,7 @@ export default function AccountForm({
           selected={form.apiVersion}
           onChange={updateSelect('apiVersion')}
           options={Object.values(API_VERSIONS)}
+          buttonShadow="shadow-sm"
         />
       </div>
       <Input
@@ -202,6 +203,7 @@ function ConnectionInput({ form, setForm }) {
         selected={form.connection}
         onChange={(value) => update('connection', value)}
         options={options}
+        buttonShadow="shadow-sm"
       />
     </div>
   ) : (
