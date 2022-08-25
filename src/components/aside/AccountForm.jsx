@@ -176,33 +176,42 @@ function ConnectionInput({ form, setForm }) {
 
   const { data: options } = useQuery(
     ['connections', form.region, form.accessToken],
-    async () => {
+    () => {
       const url = `https://workspace-gcp-${form.region}.app.carto.com/connections`
       const headers = {
         Authorization: `Bearer ${form.accessToken}`
       }
 
-      return axios.get(url, { headers }).then((res) => res.data)
+      return axios
+        .get(url, { headers })
+        .then((res) => res.data.map((c) => c.name))
     },
     { enabled: !!form.accessToken }
   )
 
-  return (
-    <>
-      <Input
+  return options?.length ? (
+    <div>
+      <label
+        htmlFor="connection"
+        className="block text-sm font-medium text-gray-700"
+      >
+        Connection
+      </label>
+      <SelectSimple
         id="connection"
-        dataListId="connection-list"
-        label="Connection"
-        value={form.connection}
-        onChange={(ev) => update('connection', ev.target.value)}
-        placeholder="carto_dw"
+        selected={form.connection}
+        onChange={(value) => update('connection', value)}
+        options={options}
       />
-      <datalist id="connection-list">
-        {(options || []).map((opt) => (
-          <option key={opt.id} value={opt.name} />
-        ))}
-      </datalist>
-    </>
+    </div>
+  ) : (
+    <Input
+      id="connection"
+      label="Connection"
+      value={form.connection}
+      onChange={(ev) => update('connection', ev.target.value)}
+      placeholder="carto_dw"
+    />
   )
 }
 
@@ -315,7 +324,7 @@ function OAuthConfig({ form, setForm, onToggle }) {
         onClick={onToggle}
         padding="p-1"
         color="gray"
-        className="rounded-full absolute -top-1 -right-1 z-20"
+        className="rounded-full absolute -top-1 -right-1"
       >
         <XIcon className="w-4 h-4" />
       </Button>
