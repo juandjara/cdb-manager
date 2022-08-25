@@ -162,6 +162,7 @@ export default function AccountConfig() {
         leaveTo="opacity-0"
       >
         <AccountForm
+          key={selectedAccount?.id || 'new'}
           config={selectedAccount}
           onClose={() => setFormOpen(false)}
           onDelete={handleDelete}
