@@ -9,6 +9,7 @@ export default function Input({
   disabled = false,
   type = 'text',
   placeholder,
+  dataListId,
   ...props
 }) {
   return (
@@ -33,6 +34,7 @@ export default function Input({
           type={type}
           name={id}
           id={id}
+          list={dataListId}
           value={value}
           onChange={onChange}
           disabled={disabled}

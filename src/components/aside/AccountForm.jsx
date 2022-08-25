@@ -6,9 +6,10 @@ import { useAlertSetter } from '@/lib/AlertContext'
 import extractErrorMessage from '@/lib/extractErrorMessage'
 import SelectSimple from '../common/SelectSimple'
 import authConfig from '@/lib/authConfig'
-import { useMutation } from 'react-query'
+import { useMutation, useQuery } from 'react-query'
 import { Auth0Client } from '@auth0/auth0-spa-js'
 import { XIcon } from '@heroicons/react/outline'
+import axios from 'axios'
 
 export const API_VERSIONS = {
   V2: 'v2',
@@ -146,13 +147,7 @@ export default function AccountForm({
             onChange={update('region')}
             placeholder="us-east1"
           />
-          <Input
-            id="connection"
-            label="Connection"
-            value={form.connection}
-            onChange={update('connection')}
-            placeholder="carto_dw"
-          />
+          <ConnectionInput form={form} setForm={setForm} />
           <AuthInput form={form} setForm={setForm} />
         </>
       )}
@@ -171,6 +166,43 @@ export default function AccountForm({
         </Button>
       </div>
     </form>
+  )
+}
+
+function ConnectionInput({ form, setForm }) {
+  function update(key, value) {
+    setForm((form) => ({ ...form, [key]: value }))
+  }
+
+  const { data: options } = useQuery(
+    ['connections', form.region, form.accessToken],
+    async () => {
+      const url = `https://workspace-gcp-${form.region}.app.carto.com/connections`
+      const headers = {
+        Authorization: `Bearer ${form.accessToken}`
+      }
+
+      return axios.get(url, { headers }).then((res) => res.data)
+    },
+    { enabled: !!form.accessToken }
+  )
+
+  return (
+    <>
+      <Input
+        id="connection"
+        dataListId="connection-list"
+        label="Connection"
+        value={form.connection}
+        onChange={(ev) => update('connection', ev.target.value)}
+        placeholder="carto_dw"
+      />
+      <datalist id="connection-list">
+        {(options || []).map((opt) => (
+          <option key={opt.id} value={opt.name} />
+        ))}
+      </datalist>
+    </>
   )
 }
 
