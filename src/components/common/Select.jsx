@@ -3,6 +3,8 @@ import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, SelectorIcon } from '@heroicons/react/solid'
 import { buttonFocusStyle } from './Button'
 
+const DEFAULT_RENDER_LABEL = (opt) => opt.label
+
 export default function Select({
   options = [],
   selected,
@@ -10,6 +12,7 @@ export default function Select({
   placeholder,
   valueKey = 'value',
   className = '',
+  renderLabel = DEFAULT_RENDER_LABEL,
   id
 }) {
   return (
@@ -62,7 +65,7 @@ export default function Select({
                           selected ? 'font-medium' : 'font-normal'
                         } block truncate`}
                       >
-                        {opt.label}
+                        {renderLabel(opt)}
                       </span>
                       {selected ? (
                         <span

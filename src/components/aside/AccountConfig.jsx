@@ -2,7 +2,7 @@ import { useRef } from 'react'
 import { useAccounts, useAccountsActions } from '@/lib/AccountsContext'
 import { Transition } from '@headlessui/react'
 import React, { useState } from 'react'
-import AccountForm from './AccountForm'
+import AccountForm, { API_VERSIONS } from './AccountForm'
 import Button from '@/components/common/Button'
 import Select from '@/components/common/Select'
 import { ACCOUNT_ACTIONS } from '@/lib/AccountsContext'
@@ -52,6 +52,15 @@ function ImportButton({ onUpload }) {
         Import
       </Button>
     </div>
+  )
+}
+
+function renderAccountOption(account) {
+  return (
+    <span className="flex items-center justify-between">
+      <span className="text-sm">{account.label}</span>
+      <span className="text-xs">{account.apiVersion || API_VERSIONS.V2}</span>
+    </span>
   )
 }
 
@@ -153,6 +162,7 @@ export default function AccountConfig() {
         selected={selectedAccount}
         onChange={setSelectedAccount}
         options={accounts}
+        renderLabel={renderAccountOption}
       />
       <Transition
         show={formOpen}
