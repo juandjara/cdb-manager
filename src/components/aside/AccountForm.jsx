@@ -235,7 +235,7 @@ function AuthInput({ form, setForm }) {
           backgroundColor="bg-transparent"
           onClick={() => update('authMode', AUTH_MODES.OAUTH)}
         >
-          OAuth Mode
+          OAuth Login
         </Button>
       }
     />
