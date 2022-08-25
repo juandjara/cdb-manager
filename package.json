@@ -11,7 +11,7 @@
     "lint": "yarn lint:format && yarn lint:fix "
   },
   "dependencies": {
-    "@auth0/auth0-react": "^1.10.2",
+    "@auth0/auth0-spa-js": "^1.22.3",
     "@deck.gl/carto": "^8.4.16",
     "@headlessui/react": "^1.2.0",
     "@heroicons/react": "^1.0.1",

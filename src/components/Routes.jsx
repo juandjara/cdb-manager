@@ -4,7 +4,6 @@ import Aside from '@/components/aside/Aside'
 import { Router } from '@reach/router'
 import Spinner from '@/components/common/Spinner'
 import { Redirect } from '@reach/router'
-import { OauthProvider } from '@/lib/AuthContext'
 
 function Loader() {
   return (
@@ -55,29 +54,27 @@ const Grid = styled.div`
 
 function GridLayout({ path, route: Route }) {
   return (
-    <OauthProvider>
-      <Grid>
-        <header className="border-b border-gray-200 py-4 px-6">
-          <h1 className="text-2xl font-medium">CDB Manager</h1>
-        </header>
-        <Aside />
-        <main>
-          <Suspense fallback={<Loader />}>
-            <Route path={path} />
-          </Suspense>
-        </main>
-        <footer className="text-sm py-4 px-4 border-t border-gray-200 bg-gray-50">
-          <span>Caught any bug? Want to improve the website? </span>
-          <a
-            rel="noopener noreferrer"
-            href="https://github.com/juandjara/cdb-manager"
-            className="font-semibold hover:underline"
-          >
-            Collaborate on Github
-          </a>
-        </footer>
-      </Grid>
-    </OauthProvider>
+    <Grid>
+      <header className="border-b border-gray-200 py-4 px-6">
+        <h1 className="text-2xl font-medium">CDB Manager</h1>
+      </header>
+      <Aside />
+      <main>
+        <Suspense fallback={<Loader />}>
+          <Route path={path} />
+        </Suspense>
+      </main>
+      <footer className="text-sm py-4 px-4 border-t border-gray-200 bg-gray-50">
+        <span>Caught any bug? Want to improve the website? </span>
+        <a
+          rel="noopener noreferrer"
+          href="https://github.com/juandjara/cdb-manager"
+          className="font-semibold hover:underline"
+        >
+          Collaborate on Github
+        </a>
+      </footer>
+    </Grid>
   )
 }
 

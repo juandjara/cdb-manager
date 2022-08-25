@@ -5,13 +5,18 @@ import executeSQL from '@/lib/executeSQL'
 import { useAlertSetter } from '@/lib/AlertContext'
 import extractErrorMessage from '@/lib/extractErrorMessage'
 import SelectSimple from '../common/SelectSimple'
-import { useAuth0 } from '@auth0/auth0-react'
 import authConfig from '@/lib/authConfig'
 import { useMutation } from 'react-query'
+import { Auth0Client } from '@auth0/auth0-spa-js'
 
 export const API_VERSIONS = {
   V2: 'v2',
   V3: 'v3'
+}
+
+export const AUTH_MODES = {
+  RAW: 'RAW',
+  OAUTH: 'OAUTH'
 }
 
 const DEFAULT_REGION = 'us-east1'
@@ -39,7 +44,9 @@ export default function AccountForm({
     const v3Config = {
       region: (config && config.region) || DEFAULT_REGION,
       connection: (config && config.connection) || DEFAULT_CONNECTION,
-      accessToken: config && config.accessToken
+      accessToken: config && config.accessToken,
+      authMode: (config && config.authMode) || AUTH_MODES.RAW,
+      clientID: config && config.clientID
     }
     const fields =
       baseFields.apiVersion === API_VERSIONS.V2 ? v2Config : v3Config
@@ -145,7 +152,7 @@ export default function AccountForm({
             onChange={update('connection')}
             placeholder="carto_dw"
           />
-          <AuthInput form={form} update={update} />
+          <AuthInput form={form} setForm={setForm} />
         </>
       )}
       <div className="flex justify-end items-center space-x-4">
@@ -166,9 +173,48 @@ export default function AccountForm({
   )
 }
 
-function AuthInput({ form, update }) {
+function AuthInput({ form, setForm }) {
+  function update(key, value) {
+    setForm((form) => ({ ...form, [key]: value }))
+  }
+
+  return form.authMode === AUTH_MODES.RAW ? (
+    <Input
+      id="accessToken"
+      label="Access Token"
+      value={form.accessToken || ''}
+      onChange={(ev) => update('accessToken', ev.target.value)}
+      corner={
+        <Button
+          type="button"
+          padding="px-2 py-1"
+          backgroundColor="bg-transparent"
+          onClick={() => update('authMode', AUTH_MODES.OAUTH)}
+        >
+          OAuth Mode
+        </Button>
+      }
+    />
+  ) : (
+    <OAuthConfig
+      form={form}
+      setForm={setForm}
+      onToggle={() => update('authMode', AUTH_MODES.RAW)}
+    />
+  )
+}
+
+function OAuthConfig({ form, setForm }) {
   const setAlert = useAlertSetter()
-  const { getAccessTokenWithPopup, logout: _logout } = useAuth0()
+  const auth0Client = useMemo(() => {
+    return new Auth0Client({
+      domain: authConfig.domain,
+      audience: authConfig.audience,
+      cacheLocation: 'localstorage',
+      client_id: form.clientID,
+      redirect_uri: window.location.origin
+    })
+  }, [form.clientID])
 
   const decodedToken = useMemo(() => {
     if (!form.accessToken) {
@@ -199,10 +245,10 @@ function AuthInput({ form, update }) {
 
   const mutation = useMutation(
     async () => {
-      const token = await getAccessTokenWithPopup({
+      const token = await auth0Client.getTokenWithPopup({
         scope: authConfig.scopes.join(' ')
       })
-      setToken(token)
+      update('accessToken', token)
     },
     {
       onError: (err) => {
@@ -213,55 +259,71 @@ function AuthInput({ form, update }) {
     }
   )
 
-  function handleLogin() {
+  function login() {
     mutation.mutate()
   }
 
-  function setToken(token) {
-    const ev = { target: { value: token } }
-    update('accessToken')(ev)
-  }
-
   function logout() {
-    setToken('')
-    _logout({
+    update('accessToken', '')
+    auth0Client.logout({
       returnTo: window.location.origin
     })
   }
 
+  function update(key, value) {
+    setForm((form) => ({ ...form, [key]: value }))
+  }
+
   const isAuthenticated = !!decodedToken
 
-  const corner = (
-    <div className="text-right" key={isAuthenticated}>
-      {isAuthenticated && (
+  return (
+    <div className="bg-gray-100 bg-opacity-75 rounded-xl p-3">
+      <div className="flex items-center justify-between">
+        <p className="text-sm font-medium text-gray-700">OAuth Config</p>
+        <div className="flex-grow"></div>
         <Button
           type="button"
           padding="px-2 py-1"
           backgroundColor="bg-transparent"
-          onClick={logout}
         >
-          Logout
+          Raw Mode
         </Button>
-      )}
-      <Button
-        type="button"
-        padding="px-2 py-1"
-        backgroundColor="bg-transparent"
-        onClick={handleLogin}
-      >
-        {isAuthenticated ? 'Refresh token' : 'Log in'}
-      </Button>
+        {/* divider */} <div className="border h-6 border-gray-300 mx-2"></div>
+        <Button
+          type="button"
+          padding="px-2 py-1"
+          backgroundColor="bg-transparent"
+          disabled={!form.clientID}
+          onClick={login}
+        >
+          {isAuthenticated ? 'Refresh' : 'Login'}
+        </Button>
+        {isAuthenticated && (
+          <Button
+            type="button"
+            padding="px-2 py-1"
+            backgroundColor="bg-transparent"
+            onClick={logout}
+          >
+            Logout
+          </Button>
+        )}
+      </div>
+      <Input
+        id="clientId"
+        label="Client ID"
+        className="mt-4"
+        value={form.clientID || ''}
+        onChange={(ev) => update('clientID', ev.target.value)}
+        disabled={isAuthenticated}
+      />
+      <Input
+        id="accessToken"
+        label="Access Token"
+        className="mt-4"
+        value={form.accessToken}
+        disabled
+      />
     </div>
-  )
-
-  return (
-    <Input
-      id="accessToken"
-      label="Access Token"
-      disabled={isAuthenticated}
-      value={form.accessToken || ''}
-      onChange={update('accessToken')}
-      corner={corner}
-    />
   )
 }
