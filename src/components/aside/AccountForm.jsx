@@ -21,7 +21,8 @@ export const AUTH_MODES = {
   OAUTH: 'OAUTH'
 }
 
-const DEFAULT_REGION = 'us-east1'
+export const GCP_REGIONS = ['us-east1', 'eu-west1', 'au-se1', 'as-ne1']
+const DEFAULT_REGION = GCP_REGIONS[0]
 const DEFAULT_CONNECTION = 'carto_dw'
 
 export default function AccountForm({
@@ -141,13 +142,21 @@ export default function AccountForm({
       )}
       {form.apiVersion === API_VERSIONS.V3 && (
         <>
-          <Input
-            id="region"
-            label="Region"
-            value={form.region}
-            onChange={update('region')}
-            placeholder="us-east1"
-          />
+          <div>
+            <label
+              htmlFor="region"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Region
+            </label>
+            <SelectSimple
+              id="region"
+              selected={form.region}
+              onChange={updateSelect('region')}
+              options={GCP_REGIONS}
+              buttonShadow="shadow-sm"
+            />
+          </div>
           <ConnectionInput form={form} setForm={setForm} />
           <AuthInput form={form} setForm={setForm} />
         </>

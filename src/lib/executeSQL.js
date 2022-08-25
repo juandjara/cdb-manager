@@ -1,4 +1,4 @@
-import { API_VERSIONS } from '@/components/aside/AccountForm'
+import { API_VERSIONS, GCP_REGIONS } from '@/components/aside/AccountForm'
 import axios from 'axios'
 
 export function cleanQuery(sql) {
@@ -62,7 +62,7 @@ export default function executeSQL({ query, credentials, options }) {
 
 function executeSQLV3({ query, credentials, options }) {
   const connection = credentials.connection || 'carto_dw'
-  const region = credentials.region || 'us-east1'
+  const region = credentials.region || GCP_REGIONS[0]
   const accessToken = credentials.accessToken
   const cancelToken = axios.CancelToken.source()
 
