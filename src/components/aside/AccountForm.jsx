@@ -8,6 +8,7 @@ import SelectSimple from '../common/SelectSimple'
 import authConfig from '@/lib/authConfig'
 import { useMutation } from 'react-query'
 import { Auth0Client } from '@auth0/auth0-spa-js'
+import { XIcon } from '@heroicons/react/outline'
 
 export const API_VERSIONS = {
   V2: 'v2',
@@ -204,7 +205,7 @@ function AuthInput({ form, setForm }) {
   )
 }
 
-function OAuthConfig({ form, setForm }) {
+function OAuthConfig({ form, setForm, onToggle }) {
   const setAlert = useAlertSetter()
   const auth0Client = useMemo(() => {
     return new Auth0Client({
@@ -277,18 +278,19 @@ function OAuthConfig({ form, setForm }) {
   const isAuthenticated = !!decodedToken
 
   return (
-    <div className="bg-gray-100 bg-opacity-75 rounded-xl p-3">
+    <div className="bg-gray-100 bg-opacity-75 rounded-xl p-3 relative">
+      <Button
+        onClick={onToggle}
+        padding="p-1"
+        color="gray"
+        className="rounded-full absolute -top-1 -right-1 z-20"
+      >
+        <XIcon className="w-4 h-4" />
+      </Button>
       <div className="flex items-center justify-between">
         <p className="text-sm font-medium text-gray-700">OAuth Config</p>
         <div className="flex-grow"></div>
-        <Button
-          type="button"
-          padding="px-2 py-1"
-          backgroundColor="bg-transparent"
-        >
-          Raw Mode
-        </Button>
-        {/* divider */} <div className="border h-6 border-gray-300 mx-2"></div>
+        {/* <div className="border h-6 border-gray-300 mx-2"></div> */}
         <Button
           type="button"
           padding="px-2 py-1"
