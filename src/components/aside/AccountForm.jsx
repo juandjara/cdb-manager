@@ -10,6 +10,7 @@ import { useMutation, useQuery } from 'react-query'
 import { Auth0Client } from '@auth0/auth0-spa-js'
 import { XIcon } from '@heroicons/react/outline'
 import axios from 'axios'
+import Select from '../common/Select'
 
 export const API_VERSIONS = {
   V2: 'v2',
@@ -179,11 +180,16 @@ export default function AccountForm({
   )
 }
 
-function ConnectionInput({ form, setForm }) {
-  function update(key, value) {
-    setForm((form) => ({ ...form, [key]: value }))
-  }
+function renderConnectionOption(opt) {
+  return (
+    <span className="flex items-center justify-between">
+      <span className="text-sm">{opt.label}</span>
+      <span className="text-xs">{opt.provider}</span>
+    </span>
+  )
+}
 
+function ConnectionInput({ form, setForm }) {
   const { data: options } = useQuery(
     ['connections', form.region, form.accessToken],
     () => {
@@ -192,11 +198,25 @@ function ConnectionInput({ form, setForm }) {
         Authorization: `Bearer ${form.accessToken}`
       }
 
-      return axios
-        .get(url, { headers })
-        .then((res) => res.data.map((c) => c.name))
+      return axios.get(url, { headers }).then((res) => res.data)
     },
     { enabled: !!form.accessToken }
+  )
+
+  function update(key, value) {
+    setForm((form) => ({ ...form, [key]: value }))
+  }
+
+  const formattedOptions = useMemo(() => {
+    return (options || []).map((opt) => ({
+      value: opt.name,
+      label: opt.name,
+      provider: opt.carto_dw ? 'CARTO' : opt.provider_id
+    }))
+  }, [options])
+
+  const selectedConnection = formattedOptions.find(
+    (opt) => opt.value === form.connection
   )
 
   return options?.length ? (
@@ -207,12 +227,13 @@ function ConnectionInput({ form, setForm }) {
       >
         Connection
       </label>
-      <SelectSimple
+      <Select
         id="connection"
-        selected={form.connection}
-        onChange={(value) => update('connection', value)}
-        options={options}
+        selected={selectedConnection}
+        onChange={(value) => update('connection', value?.value)}
+        options={formattedOptions}
         buttonShadow="shadow-sm"
+        renderLabel={renderConnectionOption}
       />
     </div>
   ) : (
