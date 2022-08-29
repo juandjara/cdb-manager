@@ -5,6 +5,14 @@ export const AUTH_MODES = {
   OAUTH: 'OAUTH'
 }
 
+export const authConfig = {
+  domain: 'auth.carto.com',
+  clientId: 'LF6ilhaCyJh3jhKcRf0mm8pBJIVrQ5sk',
+  audience: 'carto-cloud-native-api',
+  authorizeEndPoint: 'https://carto.com/oauth2/authorize', // only valid if keeping https://localhost:3000/oauthCallback
+  scopes: ['read:current_user', 'read:connections', 'read:account']
+}
+
 export const authClient = new Auth0Client({
   domain: authConfig.domain,
   audience: authConfig.audience,
@@ -13,14 +21,6 @@ export const authClient = new Auth0Client({
   redirect_uri: window.location.origin,
   scope: authConfig.scopes.join(' ')
 })
-
-export const authConfig = {
-  domain: 'auth.carto.com',
-  clientId: 'LF6ilhaCyJh3jhKcRf0mm8pBJIVrQ5sk',
-  audience: 'carto-cloud-native-api',
-  authorizeEndPoint: 'https://carto.com/oauth2/authorize', // only valid if keeping https://localhost:3000/oauthCallback
-  scopes: ['read:current_user', 'read:connections', 'read:account']
-}
 
 export function decodeToken(token) {
   if (!token) {
