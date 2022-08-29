@@ -189,6 +189,12 @@ function renderConnectionOption(opt) {
 }
 
 function ConnectionInput({ form, setForm }) {
+  const decodedToken = useMemo(
+    () => decodeToken(form.accessToken),
+    [form.accessToken]
+  )
+  const tokenIsValid = !!decodedToken
+
   const { data: options } = useQuery(
     ['connections', form.region, form.accessToken],
     () => {
@@ -199,7 +205,7 @@ function ConnectionInput({ form, setForm }) {
 
       return axios.get(url, { headers }).then((res) => res.data)
     },
-    { enabled: !!form.accessToken }
+    { enabled: tokenIsValid }
   )
 
   function update(key, value) {
@@ -286,34 +292,39 @@ const auth0Client = new Auth0Client({
   scope: authConfig.scopes.join(' ')
 })
 
+function decodeToken(token) {
+  if (!token) {
+    return null
+  }
+
+  let info = null
+  try {
+    info = JSON.parse(window.atob(token.split('.')[1]))
+  } catch (e) {
+    // pass
+  }
+
+  const now = new Date().getTime() + 1000 // 1s margin
+  const expireMS = info?.exp * 1000
+  const isValid = expireMS > now
+
+  return (
+    info &&
+    isValid && {
+      id: info['http://app.carto.com/account_id'],
+      email: info['http://app.carto.com/email'],
+      permissions: info.permissions,
+      expireMS
+    }
+  )
+}
+
 function OAuthConfig({ form, setForm, onToggle }) {
   const setAlert = useAlertSetter()
-  const decodedToken = useMemo(() => {
-    if (!form.accessToken) {
-      return null
-    }
-
-    let info = null
-    try {
-      info = JSON.parse(window.atob(form.accessToken.split('.')[1]))
-    } catch (e) {
-      // pass
-    }
-
-    const now = new Date().getTime() + 1000 // 1s margin
-    const expireMS = info?.exp * 1000
-    const isValid = expireMS > now
-
-    return (
-      info &&
-      isValid && {
-        id: info['http://app.carto.com/account_id'],
-        email: info['http://app.carto.com/email'],
-        permissions: info.permissions,
-        expireMS
-      }
-    )
-  }, [form.accessToken])
+  const decodedToken = useMemo(
+    () => decodeToken(form.accessToken),
+    [form.accessToken]
+  )
 
   const mutation = useMutation(
     async () => {
