@@ -49,8 +49,7 @@ export default function AccountForm({
       region: (config && config.region) || DEFAULT_REGION,
       connection: (config && config.connection) || DEFAULT_CONNECTION,
       accessToken: config && config.accessToken,
-      authMode: (config && config.authMode) || AUTH_MODES.RAW,
-      clientID: config && config.clientID
+      authMode: (config && config.authMode) || AUTH_MODES.RAW
     }
     const fields =
       baseFields.apiVersion === API_VERSIONS.V2 ? v2Config : v3Config
@@ -278,18 +277,17 @@ function AuthInput({ form, setForm }) {
   )
 }
 
+const auth0Client = new Auth0Client({
+  domain: authConfig.domain,
+  audience: authConfig.audience,
+  cacheLocation: 'localstorage',
+  client_id: authConfig.clientId,
+  redirect_uri: window.location.origin,
+  scope: authConfig.scopes.join(' ')
+})
+
 function OAuthConfig({ form, setForm, onToggle }) {
   const setAlert = useAlertSetter()
-  const auth0Client = useMemo(() => {
-    return new Auth0Client({
-      domain: authConfig.domain,
-      audience: authConfig.audience,
-      cacheLocation: 'localstorage',
-      client_id: form.clientID,
-      redirect_uri: window.location.origin
-    })
-  }, [form.clientID])
-
   const decodedToken = useMemo(() => {
     if (!form.accessToken) {
       return null
@@ -319,9 +317,7 @@ function OAuthConfig({ form, setForm, onToggle }) {
 
   const mutation = useMutation(
     async () => {
-      const token = await auth0Client.getTokenWithPopup({
-        scope: authConfig.scopes.join(' ')
-      })
+      const token = await auth0Client.getTokenWithPopup()
       update('accessToken', token)
     },
     {
@@ -368,7 +364,6 @@ function OAuthConfig({ form, setForm, onToggle }) {
           type="button"
           padding="px-2 py-1"
           backgroundColor="bg-transparent"
-          disabled={!form.clientID}
           onClick={login}
         >
           {isAuthenticated ? 'Refresh' : 'Login'}
@@ -384,14 +379,6 @@ function OAuthConfig({ form, setForm, onToggle }) {
           </Button>
         )}
       </div>
-      <Input
-        id="clientId"
-        label="Client ID"
-        className="mt-4"
-        value={form.clientID || ''}
-        onChange={(ev) => update('clientID', ev.target.value)}
-        disabled={isAuthenticated}
-      />
       <Input
         id="accessToken"
         label="Access Token"
