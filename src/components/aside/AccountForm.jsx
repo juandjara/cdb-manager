@@ -14,7 +14,12 @@ export const API_VERSIONS = {
   V3: 'v3'
 }
 
-export const GCP_REGIONS = ['us-east1', 'eu-west1', 'au-se1', 'as-ne1']
+export const GCP_REGIONS = [
+  'us-east1',
+  'europe-west1',
+  'australia-southeast1',
+  'asia-northeast1'
+]
 const DEFAULT_REGION = GCP_REGIONS[0]
 const DEFAULT_CONNECTION = 'carto_dw'
 
