@@ -10,9 +10,13 @@ import { API_VERSIONS } from './AccountForm'
 
 export default function Aside() {
   const { pathname } = useLocation()
-  const linkColor = pathname === '/console' ? 'bg-blue-50' : 'hover:bg-blue-50'
   const credentials = useSelectedAccount()
-  const hasMetadata = credentials && credentials.apiVersion === API_VERSIONS.V2
+  const version = credentials?.apiVersion
+  const linkClassname = `block p-2 pr-3 rounded-lg font-medium text-left text-blue-900 ${buttonFocusStyle}`
+
+  function linkColor(route) {
+    return pathname === route ? 'bg-blue-50' : 'hover:bg-blue-50'
+  }
 
   return (
     <aside className="w-96 border-r border-gray-200">
@@ -20,11 +24,19 @@ export default function Aside() {
       <nav className="space-y-4 p-3">
         <Link
           to="/console"
-          className={`block p-2 pr-3 rounded-lg font-medium text-left text-blue-900 ${linkColor} ${buttonFocusStyle}`}
+          className={`${linkClassname} ${linkColor('/console')}`}
         >
           SQL Console
         </Link>
-        {hasMetadata && (
+        {version === API_VERSIONS.V3 && (
+          <Link
+            to="/explorer"
+            className={`${linkClassname} ${linkColor('/explorer')}`}
+          >
+            Data Explorer
+          </Link>
+        )}
+        {version === API_VERSIONS.V2 && (
           <div>
             <TableList />
             <FunctionList />
