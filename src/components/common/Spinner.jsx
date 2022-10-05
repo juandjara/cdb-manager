@@ -1,11 +1,11 @@
 import React from 'react'
 
-export default function Spinner({ size = '6' }) {
+export default function Spinner({ size = '6', color = 'text-white' }) {
   return (
     <svg
       width={size * 4}
       height={size * 4}
-      className={`animate-spin text-white`}
+      className={`animate-spin ${color}`}
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
       viewBox="0 0 24 24"

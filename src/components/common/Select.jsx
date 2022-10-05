@@ -14,15 +14,21 @@ export default function Select({
   className = '',
   buttonShadow = 'shadow-md',
   renderLabel = DEFAULT_RENDER_LABEL,
+  hasError = false,
   id
 }) {
+  const buttonCN = [
+    'relative h-9 w-full py-2 pl-3 pr-10',
+    `sm:text-sm text-left bg-white rounded-lg border border-black border-opacity-10 cursor-default`,
+    buttonShadow,
+    buttonFocusStyle,
+    hasError ? 'ring-2 ring-red-300 text-red-700' : ''
+  ].join(' ')
   return (
     <Listbox value={selected} onChange={onChange}>
       {({ open }) => (
         <div id={id} className={`relative ${className}`}>
-          <Listbox.Button
-            className={`relative h-9 w-full py-2 pl-3 pr-10 text-left bg-white rounded-lg border border-black border-opacity-10 ${buttonShadow} cursor-default sm:text-sm ${buttonFocusStyle}`}
-          >
+          <Listbox.Button className={buttonCN}>
             {selected ? (
               <span className="block truncate">{selected.label}</span>
             ) : (
@@ -32,7 +38,9 @@ export default function Select({
             )}
             <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
               <SelectorIcon
-                className="w-5 h-5 text-gray-400"
+                className={`w-5 h-5 ${
+                  hasError ? 'text-red-400' : 'text-gray-400'
+                }`}
                 aria-hidden="true"
               />
             </span>

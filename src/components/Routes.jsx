@@ -17,6 +17,8 @@ const FunctionDetails = lazy(() => import('@/views/FunctionDetails'))
 const SequenceDetails = lazy(() => import('@/views/SequenceDetails'))
 const SQLConsole = lazy(() => import('@/views/SQLConsole'))
 const TableDetails = lazy(() => import('@/views/TableDetails'))
+const DataExplorer = lazy(() => import('@/views/DataExplorer'))
+const DataExplorerDetails = lazy(() => import('@/views/DataExplorerDetails'))
 
 const Grid = styled.div`
   min-height: 100vh;
@@ -83,6 +85,11 @@ export default function Layout() {
     <Router>
       <GridLayout path="/" route={() => <Redirect noThrow to="/console" />} />
       <GridLayout path="/console" route={SQLConsole} />
+      <GridLayout path="/explorer" route={DataExplorer} />
+      <GridLayout
+        path="/explorer/:connection/*table"
+        route={DataExplorerDetails}
+      />
       <GridLayout path="/fn/:fnName" route={FunctionDetails} />
       <GridLayout path="/seq/:seqName" route={SequenceDetails} />
       <GridLayout path="/table/:tablename/:tableid" route={TableDetails} />

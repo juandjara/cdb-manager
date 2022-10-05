@@ -1,9 +1,7 @@
-import { decodeToken } from '@/lib/authConfig'
-import axios from 'axios'
 import React, { useMemo } from 'react'
-import { useQuery } from 'react-query'
 import Select from '@/components/common/Select'
 import Input from '@/components/common/Input'
+import useConnections from '@/lib/data/useConnections'
 
 function renderConnectionOption(opt) {
   return (
@@ -15,24 +13,7 @@ function renderConnectionOption(opt) {
 }
 
 export default function ConnectionInput({ form, setForm }) {
-  const decodedToken = useMemo(
-    () => decodeToken(form.accessToken),
-    [form.accessToken]
-  )
-  const tokenIsValid = !!decodedToken
-
-  const { data: options } = useQuery(
-    ['connections', form.region, form.accessToken],
-    () => {
-      const url = `https://workspace-gcp-${form.region}.app.carto.com/connections`
-      const headers = {
-        Authorization: `Bearer ${form.accessToken}`
-      }
-
-      return axios.get(url, { headers }).then((res) => res.data)
-    },
-    { enabled: tokenIsValid }
-  )
+  const { data: options } = useConnections(form)
 
   function update(key, value) {
     setForm((form) => ({ ...form, [key]: value }))
