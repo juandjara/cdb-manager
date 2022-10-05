@@ -10,6 +10,7 @@ import { nanoid } from 'nanoid'
 import downloadBlob from '@/lib/downloadBlob'
 import { ACCOUNTS_KEY } from '@/lib/AccountsContext'
 import { useAlertSetter } from '@/lib/AlertContext'
+import { decodeToken } from '@/lib/authConfig'
 
 function ImportButton({ onUpload }) {
   const inputRef = useRef()
@@ -70,6 +71,7 @@ export default function AccountConfig() {
   const configActions = useAccountsActions()
   const selectedAccount = accounts.find((a) => a.selected)
   const setAlert = useAlertSetter()
+  const isTokenExpired = !decodeToken(selectedAccount.accessToken)
 
   function setSelectedAccount(account) {
     configActions[ACCOUNT_ACTIONS.SELECT](account && account.id)
@@ -156,14 +158,23 @@ export default function AccountConfig() {
           Export
         </Button>
       </div>
-      <Select
-        className="mt-3"
-        valueKey="id"
-        selected={selectedAccount}
-        onChange={setSelectedAccount}
-        options={accounts}
-        renderLabel={renderAccountOption}
-      />
+      <div
+        title={
+          isTokenExpired
+            ? 'The stored token for this account is expired. Please refresh it.'
+            : ''
+        }
+      >
+        <Select
+          className="mt-3"
+          valueKey="id"
+          hasError={isTokenExpired}
+          selected={selectedAccount}
+          onChange={setSelectedAccount}
+          options={accounts}
+          renderLabel={renderAccountOption}
+        />
+      </div>
       <Transition
         show={formOpen}
         className="mt-8"
