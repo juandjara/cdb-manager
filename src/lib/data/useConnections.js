@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { useMemo } from 'react'
 import { useQuery } from 'react-query'
-import { decodeToken } from './authConfig'
+import { decodeToken } from '../authConfig'
 
 export default function useConnections({ accessToken, region } = {}) {
   const decodedToken = useMemo(() => decodeToken(accessToken), [accessToken])

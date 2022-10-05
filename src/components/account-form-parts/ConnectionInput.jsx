@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react'
 import Select from '@/components/common/Select'
 import Input from '@/components/common/Input'
-import useConnections from '@/lib/useConnections'
+import useConnections from '@/lib/data/useConnections'
 
 function renderConnectionOption(opt) {
   return (
