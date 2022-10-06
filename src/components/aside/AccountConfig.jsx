@@ -71,7 +71,8 @@ export default function AccountConfig() {
   const configActions = useAccountsActions()
   const selectedAccount = accounts.find((a) => a.selected)
   const setAlert = useAlertSetter()
-  const isTokenExpired = !decodeToken(selectedAccount.accessToken)
+  const isTokenExpired =
+    !!selectedAccount?.accessToken && !decodeToken(selectedAccount?.accessToken)
 
   function setSelectedAccount(account) {
     configActions[ACCOUNT_ACTIONS.SELECT](account && account.id)
