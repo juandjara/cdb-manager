@@ -1,9 +1,11 @@
 import React, { Suspense, lazy } from 'react'
 import styled from 'styled-components'
 import Aside from '@/components/aside/Aside'
-import { Router } from '@reach/router'
+import { Link, Router } from '@reach/router'
 import Spinner from '@/components/common/Spinner'
 import { Redirect } from '@reach/router'
+import { ErrorBoundary } from 'react-error-boundary'
+import Button from './common/Button'
 
 function Loader() {
   return (
@@ -80,19 +82,40 @@ function GridLayout({ path, route: Route }) {
   )
 }
 
+function ErrorMessage({ error }) {
+  // eslint-disable-next-line
+  console.error(error)
+  return (
+    <div
+      role="alert"
+      className="max-w-xl bg-red-50 text-red-800 rounded-xl my-8 mx-auto p-4"
+    >
+      <h2 className="mt-1 text-xl font-bold text-red-600">
+        There was an unexpected error
+      </h2>
+      <p className="my-2 text-lg">{error.message}</p>
+      <Link to="/" className="block mt-6">
+        <Button color="red">Go Home</Button>
+      </Link>
+    </div>
+  )
+}
+
 export default function Layout() {
   return (
-    <Router>
-      <GridLayout path="/" route={() => <Redirect noThrow to="/console" />} />
-      <GridLayout path="/console" route={SQLConsole} />
-      <GridLayout path="/explorer" route={DataExplorer} />
-      <GridLayout
-        path="/explorer/:connection/*table"
-        route={DataExplorerDetails}
-      />
-      <GridLayout path="/fn/:fnName" route={FunctionDetails} />
-      <GridLayout path="/seq/:seqName" route={SequenceDetails} />
-      <GridLayout path="/table/:tablename/:tableid" route={TableDetails} />
-    </Router>
+    <ErrorBoundary FallbackComponent={ErrorMessage}>
+      <Router>
+        <GridLayout path="/" route={() => <Redirect noThrow to="/console" />} />
+        <GridLayout path="/console" route={SQLConsole} />
+        <GridLayout path="/explorer" route={DataExplorer} />
+        <GridLayout
+          path="/explorer/:connection/*table"
+          route={DataExplorerDetails}
+        />
+        <GridLayout path="/fn/:fnName" route={FunctionDetails} />
+        <GridLayout path="/seq/:seqName" route={SequenceDetails} />
+        <GridLayout path="/table/:tablename/:tableid" route={TableDetails} />
+      </Router>
+    </ErrorBoundary>
   )
 }
