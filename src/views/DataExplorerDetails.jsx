@@ -32,7 +32,7 @@ function Breadcrumb({ parts }) {
 function BreadCrumbPart({ index, part, parts }) {
   const isFirst = index === 0
   const isLast = parts.length - 1 === index
-  const link = `/explorer/${parts[0].id}/${parts.slice(1, index + 1).join('.')}`
+  const link = `/explorer/${parts[0].id}/${parts.slice(1, index + 1).join('/')}`
   return (
     <div className="flex gap-1 items-center">
       <Link to={link}>{isFirst ? part.name : part}</Link>
@@ -50,13 +50,13 @@ export default function DataExplorerDetails() {
   )
   const breadCrumbParts = [
     selectedConnection,
-    ...(table || '').split('.')
+    ...(table || '').split('/')
   ].filter(Boolean)
 
   const { data: resources, isFetching } = useConnectionResource(
     account,
     connection,
-    table
+    table.replace(/\//g, '.')
   )
 
   return (
@@ -86,7 +86,9 @@ export default function DataExplorerDetails() {
 function ResourceListItem({ resource }) {
   const Icon = resource.type === 'table' ? TableIcon : DatabaseIcon
   const link =
-    resource.type === 'table' ? `/explore-table/${resource.name}` : resource.id
+    resource.type === 'table'
+      ? `/explore-table/${resource.name}`
+      : resource.id.replace(/\./, '/')
   return (
     <li className="flex gap-3 items-center p-3 hover:bg-gray-100 rounded-lg mb-4">
       <Icon className="text-gray-600 w-6 h-6 flex-shrink-0" />
