@@ -144,13 +144,6 @@ function TableDetails({ data, connection }) {
       <Link to={queryLink}>
         <Button className="mt-4">Query this table</Button>
       </Link>
-      <Button
-        className="ml-2"
-        textColor="text-gray-700"
-        backgroundColor="hover:bg-gray-100"
-      >
-        Copy qualified name
-      </Button>
     </div>
   )
 }
