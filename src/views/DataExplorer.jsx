@@ -88,7 +88,7 @@ function TableCard({ table }) {
         <TableIcon className="w-4 h-4 text-gray-400" />
         <span>{table.connectionProviderId}</span>
       </h4>
-      <Link to={`${table.connectionId}/${table.fqn}`}>
+      <Link to={`${table.connectionId}/${table.fqn.replace(/\./g, '/')}`}>
         <p className="text-gray-800 text-xl leading-tight font-medium truncate">
           {table.name}
         </p>
