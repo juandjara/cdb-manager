@@ -19,7 +19,7 @@ export default function useConnectionResource(
         Authorization: `Bearer ${accessToken}`
       }
 
-      return axios.get(url, { headers }).then((res) => res.data.children)
+      return axios.get(url, { headers }).then((res) => res.data)
     },
     { enabled: tokenIsValid }
   )

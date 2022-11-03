@@ -9,6 +9,7 @@ import {
 } from '@heroicons/react/outline'
 import useConnections from '@/lib/data/useConnections'
 import Spinner from '@/components/common/Spinner'
+import Button from '@/components/common/Button'
 
 function Breadcrumb({ parts }) {
   return (
@@ -32,7 +33,7 @@ function Breadcrumb({ parts }) {
 function BreadCrumbPart({ index, part, parts }) {
   const isFirst = index === 0
   const isLast = parts.length - 1 === index
-  const link = `/explorer/${parts[0].id}/${parts.slice(1, index + 1).join('.')}`
+  const link = `/explorer/${parts[0].id}/${parts.slice(1, index + 1).join('/')}`
   return (
     <div className="flex gap-1 items-center">
       <Link to={link}>{isFirst ? part.name : part}</Link>
@@ -50,13 +51,13 @@ export default function DataExplorerDetails() {
   )
   const breadCrumbParts = [
     selectedConnection,
-    ...(table || '').split('.')
+    ...(table || '').split('/')
   ].filter(Boolean)
 
-  const { data: resources, isFetching } = useConnectionResource(
+  const { data, isFetching } = useConnectionResource(
     account,
     connection,
-    table
+    table.replace(/\//g, '.')
   )
 
   return (
@@ -67,26 +68,105 @@ export default function DataExplorerDetails() {
         <div className="my-4 mx-2">
           <Spinner size="6" color="text-blue-500" />
         </div>
+      ) : data.type === 'table' ? (
+        <TableDetails data={data} connection={selectedConnection} />
       ) : (
-        <ul className="mt-6">
-          {(resources || []).length === 0 && (
-            <p className="text-gray-600 p-1 font-medium">
-              No resources to list here
-            </p>
-          )}
-          {(resources || []).map((r) => (
-            <ResourceListItem key={r.id} resource={r} />
-          ))}
-        </ul>
+        <ResourceList data={data} />
       )}
     </div>
   )
 }
 
+function TableCard({ table, connection }) {
+  return (
+    <div className="py-3 max-w-md">
+      <h4 className="text-gray-700 text-base flex items-center gap-2">
+        <TableIcon className="w-4 h-4 text-gray-400" />
+        <span>
+          <span className="capitalize">{table.type}</span>
+          {' · '}
+          {connection.name}
+        </span>
+      </h4>
+      <div className="flex items-baseline gap-2">
+        <p className="text-gray-800 text-xl leading-tight font-medium truncate">
+          {table.name}
+        </p>
+        <p className="mt-2 text-gray-500 font-medium">
+          <span>{table.nrows} Rows</span>
+          {table.size && (
+            <>
+              {' · '}
+              <span>{formatSize(table.size)}</span>
+            </>
+          )}
+        </p>
+      </div>
+    </div>
+  )
+}
+
+function formatSize(size) {
+  let formatted = `${size} b`
+  if (size > 1024) {
+    formatted = `${(size / 1024).toFixed(2)} KB`
+  }
+  if (size > 1024 * 1024) {
+    formatted = `${(size / 1024 / 1024).toFixed(2)} MB`
+  }
+  if (size > 1024 * 1024 * 1024) {
+    formatted = `${(size / 1024 / 1024 / 1024).toFixed(2)} GB`
+  }
+
+  return formatted
+}
+
+function TableDetails({ data, connection }) {
+  let table = data.id
+  if (data.provider === 'bigquery') {
+    const [first, ...parts] = table.split('.')
+    table = `\`${first}\`${parts.length > 0 ? '' : '.'}${parts.join('.')}`
+  }
+
+  const queryLink = `/console?q=SELECT * FROM ${table}`
+  return (
+    <div className="py-4">
+      <TableCard table={data} connection={connection} />
+      <p className="text-sm text-gray-500 font-medium mt-2 mb-1">Schema</p>
+      <ul className="space-y-4 p-4 border border-gray-300 rounded-lg">
+        {data.schema.map((s) => (
+          <li key={s.name}>
+            <p className="text-gray-600 font-medium">{s.type}</p>
+            <p className="text-xl">{s.name}</p>
+          </li>
+        ))}
+      </ul>
+      <Link to={queryLink}>
+        <Button className="mt-4">Query this table</Button>
+      </Link>
+    </div>
+  )
+}
+
+function ResourceList({ data }) {
+  return (
+    <ul className="mt-6">
+      {(data.children || []).length === 0 && (
+        <p className="text-gray-600 p-1 font-medium">
+          No resources to list here
+        </p>
+      )}
+      {(data.children || []).map((r) => (
+        <ResourceListItem key={r.id} resource={r} />
+      ))}
+    </ul>
+  )
+}
+
 function ResourceListItem({ resource }) {
   const Icon = resource.type === 'table' ? TableIcon : DatabaseIcon
-  const link =
-    resource.type === 'table' ? `/explore-table/${resource.name}` : resource.id
+  const link = resource.id.replace(/\./g, '/')
+
   return (
     <li className="flex gap-3 items-center p-3 hover:bg-gray-100 rounded-lg mb-4">
       <Icon className="text-gray-600 w-6 h-6 flex-shrink-0" />
