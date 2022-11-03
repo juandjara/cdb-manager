@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo, useState } from 'react'
 import { useSelectedAccount } from '@/lib/AccountsContext'
 import useConnectionResource from '@/lib/data/useConnectionResource'
 import { Link, useParams } from '@reach/router'
@@ -10,6 +10,7 @@ import {
 import useConnections from '@/lib/data/useConnections'
 import Spinner from '@/components/common/Spinner'
 import Button from '@/components/common/Button'
+import Input from '@/components/common/Input'
 
 function Breadcrumb({ parts }) {
   return (
@@ -149,17 +150,38 @@ function TableDetails({ data, connection }) {
 }
 
 function ResourceList({ data }) {
+  const [search, setSearch] = useState('')
+  const numResources = (data.children || []).length
+  const filteredResources = useMemo(() => {
+    const list = data.children || []
+    const query = search.trim().toLowerCase()
+    return search ? list.filter((d) => d.name.includes(query)) : list
+  }, [search, data.children])
+  const numFilteredResources = filteredResources.length
+  const searchLabel = `${
+    search ? `${numFilteredResources} of ${numResources}` : numResources
+  } resources`
+
   return (
-    <ul className="mt-6">
-      {(data.children || []).length === 0 && (
-        <p className="text-gray-600 p-1 font-medium">
-          No resources to list here
-        </p>
-      )}
-      {(data.children || []).map((r) => (
-        <ResourceListItem key={r.id} resource={r} />
-      ))}
-    </ul>
+    <div className="mt-6">
+      <Input
+        value={search}
+        onChange={(ev) => setSearch(ev.target.value)}
+        className="mt-8 mb-2"
+        placeholder="Search resources"
+        label={searchLabel}
+      />
+      <ul>
+        {filteredResources.length === 0 && (
+          <p className="text-gray-600 p-1 font-medium">
+            No resources to list here
+          </p>
+        )}
+        {filteredResources.map((r) => (
+          <ResourceListItem key={r.id} resource={r} />
+        ))}
+      </ul>
+    </div>
   )
 }
 
