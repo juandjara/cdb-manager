@@ -56,7 +56,7 @@ function queryHistoryReducer(state, action) {
         })
       }
 
-      return newState
+      return newState.slice(-100)
     }
     case QUERY_HISTORY_ACTIONS.UPDATE:
       return state.map((opt) =>

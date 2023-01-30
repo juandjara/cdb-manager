@@ -6,6 +6,7 @@ import {
   XIcon,
   CheckIcon
 } from '@heroicons/react/outline'
+import { StarIcon as StarIconSolid } from '@heroicons/react/solid'
 import React, { useState } from 'react'
 import Button from '@/components/common/Button'
 import { Transition } from '@headlessui/react'
@@ -40,8 +41,15 @@ export default function QueryListPanel({ query, setQuery, onClose }) {
     })
   }
 
-  // eslint-disable-next-line
-  function handleFavorite(entry) {}
+  function handleFavorite(entry) {
+    actions[QUERY_HISTORY_ACTIONS.UPDATE]({
+      ...entry,
+      pinned: !entry.pinned
+    })
+  }
+
+  const pinnedQueries = history.filter((e) => e.pinned)
+  const notPinnedQueries = history.filter((e) => !e.pinned)
 
   return (
     <>
@@ -77,11 +85,31 @@ export default function QueryListPanel({ query, setQuery, onClose }) {
             <p className="font-medium text-gray-500">{account.label}</p>
           </div>
         </header>
+        {pinnedQueries.length ? (
+          <>
+            <h3 className="px-3 my-2 text-lg">Pinned queries</h3>
+            <ul className="my-2">
+              {pinnedQueries.map((entry, index) => (
+                <QueryHistoryItem
+                  key={entry.query}
+                  entry={entry}
+                  isSelected={entry.query === query}
+                  showQuery={index === selectedIndex}
+                  toggleShowQuery={() => toggleIndex(index)}
+                  onPasteQuery={() => handlePasteQuery(entry)}
+                  onChangeName={(ev) => handleNameChange(ev, entry)}
+                  onFavorite={() => handleFavorite(entry)}
+                />
+              ))}
+            </ul>
+            <hr className="mb-4" />
+          </>
+        ) : null}
         <div className="px-2">
           <SearchBox placeholder="Search query history" />
         </div>
         <ul className="my-2">
-          {history.slice(0, 100).map((entry, index) => (
+          {notPinnedQueries.map((entry, index) => (
             <QueryHistoryItem
               key={entry.query}
               entry={entry}
@@ -192,14 +220,20 @@ function QueryHistoryItem({
               <PencilIcon className="w-5 h-5" />
             </Button>
             <Button
-              title="Mark as favorite"
+              title={
+                entry.pinned ? 'Remove from favorites' : 'Mark as favorite'
+              }
               padding="p-2"
               backgroundColor="bg-transparent hover:bg-gray-100"
               textColor="text-gray-400"
               className="rounded-sm m-0 ml-1"
               onClick={onFavorite}
             >
-              <StarIcon className="w-5 h-5" />
+              {entry.pinned ? (
+                <StarIconSolid className="w-5 h-5 text-yellow-500" />
+              ) : (
+                <StarIcon className="w-5 h-5" />
+              )}
             </Button>
           </>
         )}
