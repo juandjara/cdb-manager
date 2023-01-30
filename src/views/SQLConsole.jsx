@@ -70,13 +70,36 @@ function extractColumnsFromMetadata(data, apiVersion) {
         column.align = 'right'
       }
       if (field.type === 'geometry') {
-        column.render = (value) => (value ? 'Geometry' : '')
+        column.render = (value) => <GeometryColumnRender value={value} />
+        column.render.displayName = 'GeometryColumnRenderApplied'
       }
 
       return column
     })
   }
 }
+
+function GeometryColumnRender({ value }) {
+  const [expanded, setExpanded] = useState(false)
+
+  if (!value) {
+    return ''
+  }
+
+  return (
+    // eslint-disable-next-line
+    <span
+      title={expanded ? 'Click to hide' : 'Click to reveal content'}
+      aria-label={expanded ? 'Click to hide' : 'Click to reveal content'}
+      style={{ maxHeight: 200 }}
+      onClick={() => setExpanded(!expanded)}
+      className="cursor-pointer overflow-auto block break-all whitespace-pre-wrap"
+    >
+      {expanded ? value : 'Geometry'}
+    </span>
+  )
+}
+GeometryColumnRender.displayName = 'GeometryColumnRender'
 
 function extractColumns(data, apiVersion) {
   try {
