@@ -83,7 +83,7 @@ function GeometryColumnRender({ value }) {
   const [expanded, setExpanded] = useState(false)
 
   if (!value) {
-    return ''
+    return null
   }
 
   return (
@@ -213,6 +213,15 @@ export default function SQLConsole() {
           <div></div>
         )}
       </Suspense>
+      <Button
+        onClick={() => setQueryListOpen(true)}
+        title="Histórico de queries"
+        padding="p-2"
+        color="blue"
+        className="rounded-sm m-2 absolute top-6 right-10 z-10"
+      >
+        <ClockIcon className="w-6 h-6" />
+      </Button>
       <div
         style={{ minHeight: '348px', maxHeight: 'calc(100vh - 254px)' }}
         className="relative overflow-auto border-2 border-gray-300 rounded-lg"
@@ -222,15 +231,6 @@ export default function SQLConsole() {
           onChange={setQuery}
           style={{ minHeight: 'inherit' }}
         />
-        <Button
-          onClick={() => setQueryListOpen(true)}
-          title="Histórico de queries"
-          padding="p-2"
-          color="blue"
-          className="rounded-sm m-2 absolute top-0 right-0 z-10"
-        >
-          <ClockIcon className="w-6 h-6" />
-        </Button>
       </div>
       <div className="mt-4 space-x-4">
         <Button
